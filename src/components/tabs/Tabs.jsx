@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { Home, Profile } from '../organism';
-import { Image } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const HomeIcon = <Image source={require('/assets/png/Home.png')} />;
@@ -19,11 +19,18 @@ const Tabs = () => {
                 tabBarShowLabel: false,
                 headerStyle: { backgroundColor: '#AD8B73' },
             })}
+            sceneContainerStyle={style.screen}
         >
             <Tab.Screen name="Home" component={Home} />
             <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator >
     );
 };
+
+const style = StyleSheet.create({
+    screen: {
+        backgroundColor: '#FFFBE9',
+    },
+});
 
 export default Tabs;
