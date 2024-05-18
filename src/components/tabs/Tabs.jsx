@@ -1,11 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { Home, Profile } from '../organism';
-import { Image, StyleSheet } from 'react-native';
+import { Alert, Image, Pressable, StyleSheet } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const HomeIcon = <Image source={require('/assets/png/Home.png')} />;
 const ProfileIcon = <Image source={require('/assets/png/Profile.png')} />;
+const PlusIcon = <Image source={require('/assets/png/plus.png')} />;
 
 const Tabs = () => {
     return (
@@ -18,6 +19,10 @@ const Tabs = () => {
                 tabBarStyle: { height: '8%', backgroundColor: '#AD8B73' },
                 tabBarShowLabel: false,
                 headerStyle: { backgroundColor: '#AD8B73' },
+                headerRightContainerStyle: { paddingEnd: 20 },
+                headerRight: () => {
+                    return <Pressable onPress={() => Alert.alert('add icon clicked')}>{PlusIcon}</Pressable>;
+                },
             })}
             sceneContainerStyle={style.screen}
         >

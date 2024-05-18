@@ -9,7 +9,7 @@ const Home = () => {
                 <View style={style.list}>
                     {dummyHome.map((data) => {
                         return (
-                            <Pressable style={style.item} onPress={() => Alert.alert(`${data.name}`)}>
+                            <Pressable style={style.item} onPress={() => Alert.alert(`${data.name}`)} key={data.id}>
                                 <Text>{data.name}</Text>
                             </Pressable>
                         );
