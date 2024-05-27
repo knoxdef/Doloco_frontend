@@ -1,12 +1,9 @@
-import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
-import {Tabs} from './src/components/tabs';
+import {Navigator} from './src/components/organism';
 
 function App(): React.JSX.Element {
   return (
-    <NavigationContainer>
-      <Tabs />
-    </NavigationContainer>
+      <Navigator />
   );
 }
 
