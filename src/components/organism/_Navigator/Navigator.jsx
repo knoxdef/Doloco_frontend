@@ -39,7 +39,10 @@ const HomeStackNavigator = () => {
             <Stack.Screen
                 name="AddPage"
                 component={Add}
-                options={() => ({ headerStyle: style.header })}
+                options={() => ({
+                    title: 'Add New Device',
+                    headerStyle: style.header,
+                })}
             />
         </Stack.Navigator >
     );
