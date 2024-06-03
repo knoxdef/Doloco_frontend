@@ -1,10 +1,8 @@
 import React from 'react';
-import {Navigator} from './src/components/organism';
+import {MainTabNavigation} from './src/components/navigations/_MainTabNavigation';
 
 function App(): React.JSX.Element {
-  return (
-      <Navigator />
-  );
+  return <MainTabNavigation />;
 }
 
 export default App;

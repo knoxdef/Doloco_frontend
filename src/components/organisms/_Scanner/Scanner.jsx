@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Alert, Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useBle } from '../../../utils/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Add = () => {
+const Scanner = () => {
     const [firstScanInitiated, setFirstScanInitiated] = useState(false);
     const { initializeBluetooth, allDevices } = useBle();
     const style = StyleSheet.create({
@@ -38,6 +38,9 @@ const Add = () => {
         scanResultList: {
             width: '100%',
         },
+        scanResultContentContainer: {
+            alignItems: 'center', gap: 10, padding: 20
+        },
         scanResultItem: {
             width: '80%',
             paddingVertical: 20,
@@ -47,7 +50,24 @@ const Add = () => {
             backgroundColor: '#E3CAA5',
             alignItems: 'center',
         },
+        scanResultHeader: {
+            color: 'black',
+            fontSize: 20, padding: 15,
+            borderTopWidth: 2,
+            borderBottomWidth: 2,
+        },
+        text: {
+            color: 'black',
+        },
     });
+
+    const onItemPressHandler = () => {
+        try {
+            
+        } catch (error) {
+
+        }
+    };
 
     return (
         <SafeAreaView style={style.screen}>
@@ -58,15 +78,15 @@ const Add = () => {
                 <Text style={style.scanButtonText}>{firstScanInitiated === true ? 'Scan Again' : 'Scan Now'}</Text>
             </Pressable>
             <View style={style.scanResultContainer}>
-                <Text style={{ color: 'black', fontSize: 20, padding: 15, borderTopWidth: 2, borderBottomWidth: 2 }}>Available Device</Text>
+                <Text style={style.scanResultHeader}>Available Device</Text>
                 <ScrollView
-                    contentContainerStyle={{ alignItems: 'center', gap: 10, padding: 20 }}
+                    contentContainerStyle={style.scanResultContentContainer}
                     style={style.scanResultList}
                 >
                     {allDevices.map((data) => {
                         return (
-                            <Pressable style={style.scanResultItem} onPress={() => { Alert.alert(`Clicked ${data?.id}`) }}>
-                                <Text style={{ color: 'black' }} key={data?.id}>{data?.name}</Text>
+                            <Pressable key={data?.id} style={style.scanResultItem}>
+                                <Text style={style.text}>{data?.name}</Text>
                             </Pressable>
                         );
                     })}
@@ -77,4 +97,4 @@ const Add = () => {
     );
 };
 
-export default Add;
+export default Scanner;
