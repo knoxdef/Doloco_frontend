@@ -3,7 +3,7 @@ import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react
 import { useBle } from '../../../utils/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Scanner = () => {
+const Scanner = ({ navigation }) => {
     const [firstScanInitiated, setFirstScanInitiated] = useState(false);
     const { initializeBluetooth, allDevices } = useBle();
     const style = StyleSheet.create({
@@ -61,12 +61,9 @@ const Scanner = () => {
         },
     });
 
-    const onItemPressHandler = () => {
-        try {
-            
-        } catch (error) {
-
-        }
+    const onItemPressHandler = (id, name) => {
+        console.log(id);
+        navigation.navigate('WifiInput', { deviceId: id, deviceName: name });
     };
 
     return (
@@ -85,7 +82,7 @@ const Scanner = () => {
                 >
                     {allDevices.map((data) => {
                         return (
-                            <Pressable key={data?.id} style={style.scanResultItem}>
+                            <Pressable key={data?.id} style={style.scanResultItem} onPress={() => onItemPressHandler(data?.id, data?.name)}>
                                 <Text style={style.text}>{data?.name}</Text>
                             </Pressable>
                         );

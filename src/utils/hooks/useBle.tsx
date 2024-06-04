@@ -5,6 +5,7 @@ import {BleManager, Device} from 'react-native-ble-plx';
 const useBle = () => {
   const bleManager = new BleManager();
   const [allDevices, setAllDevices] = useState<Device[]>([]);
+  const [connectedDevice, setConnectedDecive] = useState<Device | null>(null);
 
   const requestBluetoothPermission = async () => {
     if (Platform.OS === 'android') {
@@ -70,8 +71,22 @@ const useBle = () => {
     }
   };
 
+  const connectToDevice = async (deviceId: String) => {
+    try {
+      const deviceConnection = await bleManager.connectToDevice(
+        deviceId.trim(),
+      );
+      setConnectedDecive(deviceConnection);
+      await deviceConnection.discoverAllServicesAndCharacteristics();
+    } catch (error) {
+      console.log('COnnection Error', error);
+    }
+  };
+
   return {
     initializeBluetooth,
+    connectToDevice,
+    connectedDevice,
     allDevices,
   };
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { InitialHome, Scanner } from '../../organisms';
+import { Image, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
+import { InitialHome, Scanner, WifiInput } from '../../organisms';
 
 const HomeStackNavigation = () => {
     const Stack = createNativeStackNavigator();
@@ -39,6 +39,14 @@ const HomeStackNavigation = () => {
                 component={Scanner}
                 options={() => ({
                     title: 'Add New Device',
+                    headerStyle: style.header,
+                })}
+            />
+            <Stack.Screen
+                name="WifiInput"
+                component={WifiInput}
+                options={() => ({
+                    title: 'Input Wifi Information',
                     headerStyle: style.header,
                 })}
             />
