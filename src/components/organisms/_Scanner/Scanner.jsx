@@ -9,7 +9,7 @@ const Scanner = ({ navigation }) => {
     const style = StyleSheet.create({
         screen: {
             gap: 20,
-            height: '100%',
+            flex: 1,
             paddingVertical: 20,
             justifyContent: 'center',
             alignItems: 'center',

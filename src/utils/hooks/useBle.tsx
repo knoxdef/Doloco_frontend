@@ -64,6 +64,7 @@ const useBle = () => {
           startScanning();
         } else {
           Alert.alert('Bluetooth OFF');
+          return;
         }
       }, true);
     } else {
@@ -71,15 +72,34 @@ const useBle = () => {
     }
   };
 
-  const connectToDevice = async (deviceId: String) => {
+  const connectToDevice = async (
+    deviceId: string,
+    ssid: string,
+    password: string,
+  ) => {
     try {
-      const deviceConnection = await bleManager.connectToDevice(
-        deviceId.trim(),
-      );
-      setConnectedDecive(deviceConnection);
-      await deviceConnection.discoverAllServicesAndCharacteristics();
+      console.log(deviceId);
+      bleManager.connectToDevice(deviceId).then(async device => {
+        setConnectedDecive(device);
+        await device.discoverAllServicesAndCharacteristics();
+
+        const services = await device.services();
+        for (const service of services) {
+          const characteristics = await service.characteristics();
+          for (const characteristic of characteristics) {
+            if (characteristic.isWritableWithoutResponse) {
+              const data = `${ssid},${password}`;
+              await characteristic.writeWithoutResponse(data);
+              Alert.alert('Success', 'Your wifi credential successfuly sent');
+              device.cancelConnection();
+              setConnectedDecive(null);
+              return;
+            }
+          }
+        }
+      });
     } catch (error) {
-      console.log('COnnection Error', error);
+      console.log('Connection Error', error);
     }
   };
 
