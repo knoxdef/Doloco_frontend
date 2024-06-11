@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useBle } from '../../../utils/hooks';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import useManager from '../../../utils/hooks/useManager';
 
 const Scanner = ({ navigation }) => {
     const [firstScanInitiated, setFirstScanInitiated] = useState(false);
-    const { initializeBluetooth, allDevices } = useBle();
+    const { startScanning, stopScanning, allDevices } = useManager();
     const style = StyleSheet.create({
         screen: {
             gap: 20,
@@ -61,16 +61,20 @@ const Scanner = ({ navigation }) => {
         },
     });
 
-    const onItemPressHandler = (id, name) => {
-        console.log(id);
-        navigation.navigate('WifiInput', { deviceId: id, deviceName: name });
+    const onItemPressHandler = (device) => {
+        stopScanning();
+        navigation.navigate('WifiInput', { deviceId: device.id, deviceName: device.name });
     };
 
     return (
         <SafeAreaView style={style.screen}>
             <Pressable
                 style={style.scanButton}
-                onPress={() => { setFirstScanInitiated(true); initializeBluetooth(); }}
+                onPress={() => {
+                    // initializeBluetooth();
+                    setFirstScanInitiated(true);
+                    startScanning();
+                }}
             >
                 <Text style={style.scanButtonText}>{firstScanInitiated === true ? 'Scan Again' : 'Scan Now'}</Text>
             </Pressable>
@@ -80,10 +84,10 @@ const Scanner = ({ navigation }) => {
                     contentContainerStyle={style.scanResultContentContainer}
                     style={style.scanResultList}
                 >
-                    {allDevices.map((data) => {
+                    {allDevices.map((device) => {
                         return (
-                            <Pressable key={data?.id} style={style.scanResultItem} onPress={() => onItemPressHandler(data?.id, data?.name)}>
-                                <Text style={style.text}>{data?.name}</Text>
+                            <Pressable key={device?.id} style={style.scanResultItem} onPress={() => onItemPressHandler(device)}>
+                                <Text style={style.text}>{device?.name}</Text>
                             </Pressable>
                         );
                     })}

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Alert, Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useBle } from '../../../utils/hooks';
+import useManager from '../../../utils/hooks/useManager';
 
 const WifiInput = ({ route }) => {
-    const { deviceId, deviceName } = route?.params;
-    const { connectToDevice } = useBle();
+    const { deviceName, deviceId } = route?.params;
+    const { connectToDevice } = useManager();
     const [deviceDetail, setDeviceDetail] = useState({ deviceName: '', wifiName: '', wifiPassword: '' });
     const style = StyleSheet.create({
         screen: {
@@ -93,6 +93,7 @@ const WifiInput = ({ route }) => {
                     />
                     <Text style={style.text}>Wifi Password:</Text>
                     <TextInput
+                        secureTextEntry={true}
                         style={style.textInput}
                         onChangeText={handleWifiPasswordChange}
                         value={deviceDetail.wifiPassword}
