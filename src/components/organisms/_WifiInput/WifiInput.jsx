@@ -3,7 +3,7 @@ import { Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View } 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useManager from '../../../utils/hooks/useManager';
 
-const WifiInput = ({ route }) => {
+const WifiInput = ({ route, navigation }) => {
     const { deviceName, deviceId } = route?.params;
     const { connectToDevice } = useManager();
     const [deviceDetail, setDeviceDetail] = useState({ deviceName: '', wifiName: '', wifiPassword: '' });
@@ -72,6 +72,7 @@ const WifiInput = ({ route }) => {
     const handleSubmit = () => {
         connectToDevice(deviceId, deviceDetail.wifiName, deviceDetail.wifiPassword);
         setDeviceDetail({ wifiName: '', wifiPassword: '' });
+        navigation.navigate('HomePage');
     };
 
     return (
