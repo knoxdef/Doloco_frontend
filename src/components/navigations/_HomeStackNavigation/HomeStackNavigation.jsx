@@ -1,6 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Image, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { InitialHome, Scanner, WifiInput } from '../../organisms';
 
 const HomeStackNavigation = () => {

@@ -24,7 +24,6 @@ const useManager = () => {
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         ]);
-        console.log('Granted', granted);
 
         if (
           granted['android.permission.BLUETOOTH_SCAN'] !==
@@ -42,7 +41,6 @@ const useManager = () => {
         const granted = await PermissionsAndroid.requestMultiple([
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         ]);
-        console.log('Granted', granted);
 
         if (
           granted['android.permission.ACCESS_FINE_LOCATION'] !==
@@ -59,7 +57,6 @@ const useManager = () => {
 
   const handleDiscoverPeripheral = (device: Device) => {
     if (device && device?.id && device.name?.includes('Doloco')) {
-      console.log('Discovered device', device);
       setAllDevices(prevDevices => {
         if (!prevDevices.some(d => d.id === device.id)) {
           return [...prevDevices, device];
@@ -81,17 +78,13 @@ const useManager = () => {
         'BleManagerDiscoverPeripheral',
         handleDiscoverPeripheral,
       );
-      setAllDevices([]); // Clear devices before starting scan
+      setAllDevices([]);
 
       BleManager.scan([], 10, true)
-        .then(() => {
-          console.log('Scanning started...');
-        })
-        .catch(err => {
-          console.error(err);
-        });
+      .catch(err => {
+        console.error(err);
+      });
 
-      // Stop scanning after 10 seconds
       setTimeout(() => {
         stopScanning();
       }, 5000);
@@ -101,7 +94,6 @@ const useManager = () => {
   const stopScanning = () => {
     BleManager.stopScan()
       .then(() => {
-        console.log('Scanning stopped');
         bleManagerEmitter.removeAllListeners('BleManagerDiscoverPeripheral');
       })
       .catch(err => {
@@ -118,9 +110,7 @@ const useManager = () => {
       .then(() => {
         return BleManager.retrieveServices(deviceId);
       })
-      .then(deviceInfo => {
-        console.log('Device info', deviceInfo);
-        // Here you can interact with the device's services and characteristics
+      .then(() => {
         sendMessage(deviceId, ssid, password);
       })
       .catch(error => {
@@ -147,7 +137,6 @@ const useManager = () => {
         CHARACTERISTIC_UUID,
         stringToBytes(data),
       );
-      console.log('WiFi credentials sent:', data);
     } catch (error) {
       console.log('Write error', error);
     }

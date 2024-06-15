@@ -72,7 +72,7 @@ const WifiInput = ({ route, navigation }) => {
     const handleSubmit = () => {
         connectToDevice(deviceId, deviceDetail.wifiName, deviceDetail.wifiPassword);
         setDeviceDetail({ wifiName: '', wifiPassword: '' });
-        navigation.navigate('HomePage');
+        navigation.navigate('Home');
     };
 
     return (
