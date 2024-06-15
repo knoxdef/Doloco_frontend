@@ -10,10 +10,6 @@ const IotProfile = (route) => {
 
     const navigation = useNavigation();
   
-    const accessTool = () => {
-      navigation.navigate('AccessData');
-    };
-  
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.root}>
@@ -23,7 +19,7 @@ const IotProfile = (route) => {
           </View>
         </View>
         <View style={styles.iotFooterContainer}>
-          <TouchableOpacity onPress={accessTool}>
+          <TouchableOpacity onPress={() => navigation.navigate('AccessData')}>
             <Text style={styles.acButton}>Access</Text>
           </TouchableOpacity>
           <TouchableOpacity>

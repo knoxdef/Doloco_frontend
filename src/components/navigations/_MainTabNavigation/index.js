@@ -1,3 +1,3 @@
-import MainTabNavigation from './MainTabNavigation';
+// import MainTabNavigation from './MainTabNavigation';
 
-export { MainTabNavigation };
+// export { MainTabNavigation };
