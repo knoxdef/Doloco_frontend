@@ -1,13 +1,8 @@
 import React from 'react';
-import {MainTabNavigation} from './src/components/navigations/_MainTabNavigation';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { Navigator } from './src/components/navigations/_Navigator';
 
 function App(): React.JSX.Element {
-  return (
-    <SafeAreaView style={{flex: 1}}>
-      <MainTabNavigation />
-    </SafeAreaView>
-  );
+  return <Navigator />;
 }
 
 export default App;
