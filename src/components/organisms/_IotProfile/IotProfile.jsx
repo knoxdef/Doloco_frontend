@@ -1,21 +1,23 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
-
-import { useNavigation } from '@react-navigation/native'
+import React, { useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Button, Pressable } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { PinNumberBlock } from '../../molecules';
+import useAxios from '../../../utils/hooks/useAxios/useAxios';
 
 const IotProfile = (route) => {
-
   const navigation = useNavigation();
+  const { findPin } = useAxios();
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.root}>
         <Text style={styles.toolName}>Device IoT</Text>
         <View style={styles.switchContainer}>
-          <Text>Records status open/lock</Text>
+          <Text style={{ color: 'black' }}>Your Pin Number:</Text>
+          <PinNumberBlock pinNumber={0} />
+          <Pressable onPress={findPin}><Text style={{ color: 'black' }}>Test</Text></Pressable>
         </View>
       </View>
-      
       <View style={styles.iotFooterContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('AccessData')}>
           <Text style={styles.acButton}>Access</Text>
@@ -42,11 +44,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 35,
     color: 'black',
-    marginBottom: 20, // Adding some space between the title and the switch
+    marginBottom: 20,
   },
   switchContainer: {
     flex: 1,
-    justifyContent: 'center', // Center the switch vertically
+    justifyContent: 'center',
     alignItems: 'center',
   },
   iotFooterContainer: {
