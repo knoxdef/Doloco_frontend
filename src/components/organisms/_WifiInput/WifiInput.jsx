@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useManager from '../../../utils/hooks/useManager';
+import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const WifiInput = ({ route, navigation }) => {
     const { deviceName, deviceId } = route?.params;
     const { connectToDevice } = useManager();
+    const { addToExisting } = useAsyncStorage();
     const [deviceDetail, setDeviceDetail] = useState({ deviceName: '', wifiName: '', wifiPassword: '' });
     const style = StyleSheet.create({
         screen: {
@@ -69,10 +72,16 @@ const WifiInput = ({ route, navigation }) => {
         }));
     };
 
-    const handleSubmit = () => {
-        connectToDevice(deviceId, deviceDetail.wifiName, deviceDetail.wifiPassword);
-        setDeviceDetail({ wifiName: '', wifiPassword: '' });
-        navigation.navigate('HomeStack');
+    const handleSubmit = async () => {
+        try {
+            connectToDevice(deviceId, deviceDetail.wifiName, deviceDetail.wifiPassword);
+            await addToExisting("iot_list", { name: deviceDetail.deviceName, serial: deviceName }, Array);
+            // AsyncStorage.clear();
+            setDeviceDetail({ wifiName: '', wifiPassword: '' });
+            navigation.navigate('Home');
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

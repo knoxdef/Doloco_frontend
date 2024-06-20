@@ -80,8 +80,7 @@ const useManager = () => {
       );
       setAllDevices([]);
 
-      BleManager.scan([], 10, true)
-      .catch(err => {
+      BleManager.scan([], 10, true).catch(err => {
         console.error(err);
       });
 
@@ -150,7 +149,6 @@ const useManager = () => {
     startScanning,
     stopScanning,
     connectToDevice,
-    sendMessage,
     allDevices,
   };
 };

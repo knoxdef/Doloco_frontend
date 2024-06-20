@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -9,12 +9,29 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
-import { dummyHome } from '../../../utils/dummyData/homeDummy';
 import ListItem from '../../../utils/dummyData/ListItem';
+import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
+import { dummyHome } from '../../../utils/dummyData/homeDummy';
 
 const Home = () => {
   const navigation = useNavigation();
+  const [iotList, setIotList] = useState([]);
+  const { getData } = useAsyncStorage();
+
+  const fetchData = async () => {
+    await getData('iot_list').then((data) => {
+      console.log(data);
+      if (data) {
+        setIotList(data);
+      }
+    });
+  };
+
+  useEffect(() => {
+    navigation.addListener('focus', async () => { await fetchData(); });
+  }, []);
+
+  console.log(iotList);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -26,12 +43,12 @@ const Home = () => {
       </View>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View>
-          {dummyHome.map(data => (
+          {iotList.map((iot) => (
             <ListItem
-              key={data.id}
-              name={data.name}
+              key={iot.serial}
+              name={iot.name}
               onPress={() =>
-                navigation.navigate('IotProfile', { name: data.name })
+                navigation.navigate('IotProfile', { name: iot.name, serial: iot.serial })
               }
             />
           ))}

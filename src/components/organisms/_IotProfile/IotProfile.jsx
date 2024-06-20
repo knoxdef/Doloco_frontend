@@ -2,20 +2,17 @@ import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Button, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { PinNumberBlock } from '../../molecules';
-import useAxios from '../../../utils/hooks/useAxios/useAxios';
 
-const IotProfile = (route) => {
+const IotProfile = ({ route }) => {
   const navigation = useNavigation();
-  const { findPin } = useAxios();
+  const { name, serial } = route?.params;
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.root}>
-        <Text style={styles.toolName}>Device IoT</Text>
+        <Text style={styles.toolName}>{name}</Text>
         <View style={styles.switchContainer}>
           <Text style={{ color: 'black' }}>Your Pin Number:</Text>
-          <PinNumberBlock pinNumber={0} />
-          <Pressable onPress={findPin}><Text style={{ color: 'black' }}>Test</Text></Pressable>
         </View>
       </View>
       <View style={styles.iotFooterContainer}>
