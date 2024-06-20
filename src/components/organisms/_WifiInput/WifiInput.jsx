@@ -3,7 +3,6 @@ import { Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View } 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useManager from '../../../utils/hooks/useManager';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const WifiInput = ({ route, navigation }) => {
     const { deviceName, deviceId } = route?.params;

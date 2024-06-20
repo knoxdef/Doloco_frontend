@@ -11,10 +11,8 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ListItem from '../../../utils/dummyData/ListItem';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
-import { dummyHome } from '../../../utils/dummyData/homeDummy';
 
-const Home = () => {
-  const navigation = useNavigation();
+const Home = ({ route, navigation }) => {
   const [iotList, setIotList] = useState([]);
   const { getData } = useAsyncStorage();
 
@@ -23,12 +21,15 @@ const Home = () => {
       console.log(data);
       if (data) {
         setIotList(data);
+      } else {
+        setIotList([]);
       }
     });
   };
 
   useEffect(() => {
-    navigation.addListener('focus', async () => { await fetchData(); });
+    const unsubscribe = navigation.addListener('focus', fetchData);
+    return unsubscribe;
   }, []);
 
   console.log(iotList);

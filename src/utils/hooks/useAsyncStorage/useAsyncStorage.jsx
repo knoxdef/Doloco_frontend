@@ -24,11 +24,9 @@ const useAsyncStorage = () => {
             const existingData = await getData(key);
             let updatedData;
 
-            console.log("Existing data", existingData);
-
             if (Array.isArray(existingData)) {
                 // If existing data is an array, add new data to the array
-                updatedData = [...existingData, ...value];
+                updatedData = [...existingData, value];
             } else if (typeof existingData === 'object' && existingData !== null) {
                 // If existing data is an object, merge new data into the object
                 updatedData = { ...existingData, ...value };
@@ -48,10 +46,28 @@ const useAsyncStorage = () => {
         }
     };
 
+    const removeFromExistingData = async (key, serial) => {
+        try {
+            const existingData = await getData(key);
+            let updatedData;
+
+            if (Array.isArray(existingData)) {
+                updatedData = existingData.filter((item) => item.serial !== serial);
+                saveData(key, updatedData);
+            } else {
+                AsyncStorage.removeItem(key);
+            }
+
+        } catch (error) {
+
+        }
+    };
+
     return {
         saveData,
         getData,
         addToExisting,
+        removeFromExistingData,
     };
 }
 

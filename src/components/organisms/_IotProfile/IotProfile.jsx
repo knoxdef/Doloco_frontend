@@ -2,10 +2,18 @@ import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Button, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { PinNumberBlock } from '../../molecules';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 
 const IotProfile = ({ route }) => {
   const navigation = useNavigation();
   const { name, serial } = route?.params;
+  const { removeFromExistingData } = useAsyncStorage();
+
+  const handleDelete = () => {
+    removeFromExistingData("iot_list", serial);
+    navigation.navigate("Home", { example: "example" });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -19,7 +27,7 @@ const IotProfile = ({ route }) => {
         <TouchableOpacity onPress={() => navigation.navigate('AccessData')}>
           <Text style={styles.acButton}>Access</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleDelete}>
           <Text style={styles.dlButton}>Delete</Text>
         </TouchableOpacity>
       </View>
