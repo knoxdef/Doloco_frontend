@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -7,32 +7,33 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ListItem from '../../../utils/dummyData/ListItem';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
+import { useFocusEffect } from '@react-navigation/native';
 
-const Home = ({ route, navigation }) => {
+const Home = ({ navigation }) => {
   const [iotList, setIotList] = useState([]);
   const { getData } = useAsyncStorage();
 
-  const fetchData = async () => {
-    await getData('iot_list').then((data) => {
-      console.log(data);
+  const fetchData = useCallback(async () => {
+    try {
+      const data = await getData('iot_list');
       if (data) {
         setIotList(data);
       } else {
         setIotList([]);
       }
-    });
-  };
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, [getData]);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', fetchData);
-    return unsubscribe;
-  }, []);
-
-  console.log(iotList);
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [fetchData])
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

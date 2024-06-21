@@ -75,7 +75,6 @@ const WifiInput = ({ route, navigation }) => {
         try {
             connectToDevice(deviceId, deviceDetail.wifiName, deviceDetail.wifiPassword);
             await addToExisting("iot_list", { name: deviceDetail.deviceName, serial: deviceName }, Array);
-            // AsyncStorage.clear();
             setDeviceDetail({ wifiName: '', wifiPassword: '' });
             navigation.navigate('Home');
         } catch (error) {
