@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
   },
   welcomeText: {
     fontSize: 18,

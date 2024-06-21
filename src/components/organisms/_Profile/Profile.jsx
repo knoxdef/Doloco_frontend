@@ -2,8 +2,9 @@ import React from 'react';
 import { Alert, Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { FIREBASE_AUTH } from '../../../../firebase';
 
-const Profile = ({ navigation }) => {
+const Profile = () => {
   return (
     <SafeAreaView style={style.screen}>
       <View>
@@ -12,8 +13,8 @@ const Profile = ({ navigation }) => {
       </View>
 
       <View style={style.buttonContainer}>
-        <Pressable style={style.button} onPress={() => Alert.alert("Profile Settings")}>
-          <Text style={style.text}>Profile Settings</Text>
+        <Pressable style={style.button} onPress={() => FIREBASE_AUTH.signOut()}>
+          <Text style={style.text}>Log Out</Text>
         </Pressable>
       </View>
     </SafeAreaView>

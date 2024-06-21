@@ -12,6 +12,7 @@ const CustomInput = ({value, setValue, placeholder, secureTextEntry, keyboardTyp
             secureTextEntry={secureTextEntry}
             keyboardType={keyboardType}
             multiline={multiline}
+            autoCapitalize="none"
             />
         </View>
     )
