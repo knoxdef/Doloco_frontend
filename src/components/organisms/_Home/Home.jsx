@@ -7,18 +7,16 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ListItem from '../../../utils/dummyData/ListItem';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 
-const Home = ({ route, navigation }) => {
+const Home = ({ navigation }) => {
   const [iotList, setIotList] = useState([]);
   const { getData } = useAsyncStorage();
 
   const fetchData = async () => {
     await getData('iot_list').then((data) => {
-      console.log(data);
       if (data) {
         setIotList(data);
       } else {
