@@ -13,7 +13,7 @@ const IotProfile = ({ route }) => {
 
   const handleDelete = () => {
     removeFromExistingData("iot_list", serial);
-    navigation.navigate("Home", { forReset: "Ignore this" });
+    navigation.navigate("Home", { refresh: true });
   };
 
   const accesstypeList = [
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   dropdown: {
-    width: Dimensions.get('window').width * 0.8,
+    width: Dimensions.get('window').width * 0.7,
     height: Dimensions.get('window').width * 0.1,
     borderColor: 'gray',
     borderWidth: 0.5,
