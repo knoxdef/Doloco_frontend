@@ -1,38 +1,28 @@
-import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  ActivityIndicator,
-  Alert,
-  Pressable
-} from 'react-native';
+import React, { useState } from 'react';
+import { Alert, ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigation } from '@react-navigation/native';
 import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
-import {useNavigation} from '@react-navigation/native';
-
-import {FIREBASE_AUTH} from '../../../../firebase';
-import {signInWithEmailAndPassword} from 'firebase/auth';
+import { FIREBASE_AUTH } from '../../../../firebase';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setloading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
-  const auth = FIREBASE_AUTH;
 
   const onPressLogin = async () => {
-    setloading(true);
+    setLoading(true);
     try {
-      // Sign in user with email and password
-      await signInWithEmailAndPassword(auth, email, password);
+      // Sign in user with email and password using FIREBASE_AUTH instance
+      await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
       // Navigate to the next screen
       navigation.navigate('TabNavigator');
     } catch (error) {
       Alert.alert('Login failed', error.message);
     } finally {
-      setloading(false);
+      setLoading(false);
     }
   };
 
@@ -105,10 +95,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: '100%',
-
     padding: 15,
     marginVertical: 5,
-
     alignItems: 'center',
     borderRadius: 5,
     backgroundColor: '#AD8B73',
