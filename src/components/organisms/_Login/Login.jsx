@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Alert, ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
-import { FIREBASE_AUTH } from '../../../../firebase';
+import { useAxios } from '../../../utils/hooks';
+import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
+import { HttpStatusCode } from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -11,14 +12,23 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
+  const { postRequest } = useAxios();
+  const { addToExisting } = useAsyncStorage();
 
   const onPressLogin = async () => {
     setLoading(true);
     try {
-      // Sign in user with email and password using FIREBASE_AUTH instance
-      await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
-      // Navigate to the next screen
-      navigation.navigate('TabNavigator');
+      const response = await postRequest('register', { email: email, password: password });
+
+      console.log(response.data);
+
+      // if (response.status === HttpStatusCode.Created) {
+      //   const responseUser = response.data.user;
+      //   await addToExisting('user', { id: responseUser.id, username: responseUser.name });
+      //   console.log("User:", await getData('user'));
+
+      //   navigation.navigate('TabNavigator');
+      // }
     } catch (error) {
       Alert.alert('Login failed', error.message);
     } finally {
@@ -30,7 +40,7 @@ const Login = () => {
     navigation.navigate('Register');
   };
 
-  const onPressForgotPassword = () => {};
+  const onPressForgotPassword = () => { };
 
   return (
     <View style={styles.container}>

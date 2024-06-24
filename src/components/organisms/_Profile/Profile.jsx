@@ -1,10 +1,17 @@
 import React from 'react';
-import { Alert, Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { FIREBASE_AUTH } from '../../../../firebase';
+import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 
 const Profile = () => {
+
+  const { removeFromExistingData } = useAsyncStorage();
+
+  const handleSignOut = () => {
+    removeFromExistingData('user');
+  };
+
   return (
     <SafeAreaView style={style.screen}>
       <View>
@@ -13,7 +20,7 @@ const Profile = () => {
       </View>
 
       <View style={style.buttonContainer}>
-        <Pressable style={style.button} onPress={() => FIREBASE_AUTH.signOut()}>
+        <Pressable style={style.button} onPress={handleSignOut}>
           <Text style={style.text}>Log Out</Text>
         </Pressable>
       </View>

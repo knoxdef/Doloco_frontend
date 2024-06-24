@@ -25,8 +25,6 @@ const Register = () => {
       if (response.status === HttpStatusCode.Created) {
         const responseUser = response.data.user;
         await addToExisting('user', { id: responseUser.id, username: responseUser.name });
-        console.log("User:", await getData('user'));
-
         navigation.navigate('TabNavigator');
       }
     } catch (error) {
