@@ -13,7 +13,7 @@ const Register = () => {
   const [loading, setloading] = useState(false);
 
   const { postRequest } = useAxios();
-  const { addToExisting, getData } = useAsyncStorage();
+  const { addToExisting } = useAsyncStorage();
 
   const navigation = useNavigation();
 
@@ -25,7 +25,6 @@ const Register = () => {
       if (response.status === HttpStatusCode.Created) {
         const responseUser = response.data.user;
         await addToExisting('user', { id: responseUser.id, username: responseUser.name });
-        navigation.navigate('TabNavigator');
       }
     } catch (error) {
       Alert.alert('Registration failed', error.message);

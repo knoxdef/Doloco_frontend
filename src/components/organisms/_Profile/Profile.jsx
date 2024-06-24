@@ -1,22 +1,44 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Profile = () => {
+  const [username, setUsername] = useState();
 
-  const { removeFromExistingData } = useAsyncStorage();
+  const { removeFromExistingData, getData } = useAsyncStorage();
 
   const handleSignOut = () => {
     removeFromExistingData('user');
   };
 
+  const fetchUsername = useCallback(async () => {
+    try {
+      const data = await getData('user');
+      console.log(data);
+      if (data) {
+        setUsername(data.username);
+      } else {
+        setUsername('');
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, [getData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUsername();
+    }, [fetchUsername])
+  );
+
   return (
     <SafeAreaView style={style.screen}>
       <View>
         <Ionicons name='person-circle-outline' color={'black'} size={Dimensions.get('window').width * 0.5} />
-        <Text style={style.nameText}>Example Name</Text>
+        <Text style={style.nameText}>{username}</Text>
       </View>
 
       <View style={style.buttonContainer}>

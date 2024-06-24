@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Alert, ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
-import { useAxios } from '../../../utils/hooks';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
+import { useAxios } from '../../../utils/hooks/useAxios';
 import { HttpStatusCode } from 'axios';
 
 const Login = () => {
@@ -18,17 +18,12 @@ const Login = () => {
   const onPressLogin = async () => {
     setLoading(true);
     try {
-      const response = await postRequest('register', { email: email, password: password });
+      const response = await postRequest('login', { email: email, password: password });
 
-      console.log(response.data);
-
-      // if (response.status === HttpStatusCode.Created) {
-      //   const responseUser = response.data.user;
-      //   await addToExisting('user', { id: responseUser.id, username: responseUser.name });
-      //   console.log("User:", await getData('user'));
-
-      //   navigation.navigate('TabNavigator');
-      // }
+      if (response.status === HttpStatusCode.Ok) {
+        const responseUser = response.data.data;
+        await addToExisting('user', { id: responseUser.id, username: responseUser.name });
+      }
     } catch (error) {
       Alert.alert('Login failed', error.message);
     } finally {
@@ -50,6 +45,7 @@ const Login = () => {
         <TextInput
           style={styles.inputCointainer}
           placeholder="Email"
+          placeholderTextColor={'grey'}
           value={email}
           onChangeText={text => setEmail(text)}
           autoCapitalize="none"
@@ -57,6 +53,7 @@ const Login = () => {
         <TextInput
           style={styles.inputCointainer}
           placeholder="Password"
+          placeholderTextColor={'grey'}
           value={password}
           onChangeText={text => setPassword(text)}
           secureTextEntry={true}
@@ -102,6 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginVertical: 5,
+    color: 'black',
   },
   buttonContainer: {
     width: '100%',
