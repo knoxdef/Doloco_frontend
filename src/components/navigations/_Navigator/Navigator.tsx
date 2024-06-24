@@ -1,31 +1,41 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Login} from '../../organisms/_Login';
 import {Register} from '../../organisms/_Register';
 import TabNavigator from '../_TabNavigator/TabNavigator';
-import { User, onAuthStateChanged } from 'firebase/auth';
-import { FIREBASE_AUTH } from '../../../../firebase';
+import {useAsyncStorage} from '../../../utils/hooks/useAsyncStorage';
 
 const Stack = createNativeStackNavigator();
 
 const Navigator = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState({id: '', username: ''});
+
+  const {getData} = useAsyncStorage();
+
+  const fetchUser = useCallback(async () => {
+    try {
+      const data = await getData('user');
+      if (data) {
+        setUser({id: data.id, username: data.name});
+      } else {
+        setUser({id: '', username: ''});
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  }, [getData]);
 
   useEffect(() => {
-    onAuthStateChanged(FIREBASE_AUTH, (user) => {
-
-      setUser(user);
-    })
-
-  }, []);
+    fetchUser();
+  }, [fetchUser]);
 
   return (
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{headerShown: false}}>
-          {user ? (
+          {user.id !== '' ? (
             <Stack.Screen name="TabNavigator" component={TabNavigator} />
           ) : (
             <>
