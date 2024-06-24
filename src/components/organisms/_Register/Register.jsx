@@ -34,9 +34,6 @@ const Register = () => {
     }
   };
 
-  const onPressForgotPassword = () => {
-  };
-
   const onPressLogin = () => {
     navigation.navigate('Login');
   };
@@ -75,11 +72,10 @@ const Register = () => {
           <ActivityIndicator size="large" color="#000ff" />
         ) : (
           <Pressable onPress={onPressregister} style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>Register</Text>
           </Pressable>
         )}
 
-        <CustomButton text="Forgot password?" onPress={onPressForgotPassword} type="TERTIARY" />
       </View>
       <View style={styles.bottomButton}>
         <CustomButton text="Have an account? Login Here" onPress={onPressLogin} type="TERTIARY" />
