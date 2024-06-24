@@ -10,8 +10,6 @@ import { FIREBASE_AUTH } from '../../../../firebase';
 
 const Stack = createNativeStackNavigator();
 
-
-
 const Navigator = () => {
   const [user, setUser] = useState<User | null>(null);
 

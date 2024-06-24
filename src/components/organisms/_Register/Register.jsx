@@ -1,35 +1,34 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native';
 import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
+import { useAxios } from '../../../utils/hooks/useAxios';
+import { HttpStatusCode } from 'axios';
+import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useNavigation } from '@react-navigation/native';
-import { FIREBASE_AUTH, FIRESTORE_DB } from '../../../../firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { collection, doc, setDoc } from 'firebase/firestore';
 
 const Register = () => {
-  const [Username, setUsername] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setloading] = useState(false);
 
+  const { postRequest } = useAxios();
+  const { addToExisting, getData } = useAsyncStorage();
+
   const navigation = useNavigation();
-  const auth = FIREBASE_AUTH;
 
   const onPressregister = async () => {
     setloading(true);
     try {
-      // Create user with email and password
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const response = await postRequest('register', { name: username, email: email, password: password });
 
-      // Save additional user info in Firestore
-      const user = userCredential.user;
-      await setDoc(doc(FIRESTORE_DB, 'users', user.uid), {
-        username: Username,
-        email: email,
-      });
+      if (response.status === HttpStatusCode.Created) {
+        const responseUser = response.data.user;
+        await addToExisting('user', { id: responseUser.id, username: responseUser.name });
+        console.log("User:", await getData('user'));
 
-      // Navigate to the next screen
-      navigation.navigate('TabNavigator');
+        navigation.navigate('TabNavigator');
+      }
     } catch (error) {
       Alert.alert('Registration failed', error.message);
     } finally {
@@ -52,12 +51,14 @@ const Register = () => {
         <TextInput
           style={styles.inputCointainer}
           placeholder="Username"
-          value={Username}
+          placeholderTextColor={'grey'}
+          value={username}
           onChangeText={(text) => setUsername(text)}
         />
         <TextInput
           style={styles.inputCointainer}
           placeholder="Email"
+          placeholderTextColor={'grey'}
           value={email}
           onChangeText={(text) => setEmail(text)}
           autoCapitalize="none"
@@ -65,6 +66,7 @@ const Register = () => {
         <TextInput
           style={styles.inputCointainer}
           placeholder="Password"
+          placeholderTextColor={'grey'}
           value={password}
           onChangeText={(text) => setPassword(text)}
           secureTextEntry={true}
@@ -102,13 +104,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginVertical: 5,
+    color: 'black',
   },
   buttonContainer: {
     width: '100%',
-
     padding: 15,
     marginVertical: 5,
-
     alignItems: 'center',
     borderRadius: 5,
     backgroundColor: '#AD8B73',
