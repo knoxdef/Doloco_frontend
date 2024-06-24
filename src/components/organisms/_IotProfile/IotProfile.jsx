@@ -1,19 +1,40 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, Alert } from 'react-native';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { Dropdown } from 'react-native-element-dropdown';
+import { useBiometric } from '../../../utils/hooks/useBiometric';
 
-const IotProfile = ({ route }) => {
-  const navigation = useNavigation();
+const IotProfile = ({ navigation, route }) => {
+  const [value, setValue] = useState('');
   const { name, serial } = route?.params;
   const { removeFromExistingData } = useAsyncStorage();
-
-  const [value, setValue] = useState('');
+  const { checkBiometrics, checkBiometricKeyExist, createKeys, createSignature } = useBiometric();
 
   const handleDelete = () => {
-    removeFromExistingData("iot_list", serial);
-    navigation.navigate("Home", { refresh: true });
+    removeFromExistingData('iot_list', serial);
+    navigation.navigate('Home', { refresh: true });
+  };
+
+  const handleAccess = async () => {
+    if (value === 'Fingerprint') {
+      const available = await checkBiometrics();
+      if (available) {
+        const result = await checkBiometricKeyExist();
+
+        if (result) {
+          createSignature('Enter Your Fingerprint', JSON.stringify({ test: 'Test' }));  //put user id and serial
+        } else {
+          createKeys();
+        }
+
+      } else {
+        console.log('Biometric not available');
+      }
+    } else if (value === 'Pin') {
+      Alert.alert('Pin');
+    } else {
+      Alert.alert('Warning', 'Select Your Access Type...');
+    }
   };
 
   const accesstypeList = [
@@ -37,7 +58,7 @@ const IotProfile = ({ route }) => {
             maxHeight={200}
             labelField="label"
             valueField="value"
-            placeholder="Select Access Way..."
+            placeholder="Select Access Type..."
             data={accesstypeList}
             value={value}
             onChange={item => {
@@ -46,8 +67,8 @@ const IotProfile = ({ route }) => {
           />
 
           <Text style={{ color: 'black' }}>Button to Access</Text>
-          <TouchableOpacity onPress={handleDelete}>
-            <Text style={styles.dlButton}>Open/Close</Text>
+          <TouchableOpacity onPress={handleAccess}>
+            <Text style={styles.accessButton}>Open Door</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -121,7 +142,15 @@ const styles = StyleSheet.create({
   },
   selectedTextStyle: {
     color: 'black',
-  }
+  },
+  accessButton: {
+    fontSize: 20,
+    color: 'white',
+    backgroundColor: 'green',
+    paddingHorizontal: 20,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
 });
 
 export default IotProfile;

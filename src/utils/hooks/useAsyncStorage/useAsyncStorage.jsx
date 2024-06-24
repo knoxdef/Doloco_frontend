@@ -6,7 +6,7 @@ const useAsyncStorage = () => {
             await AsyncStorage.setItem(key, JSON.stringify(value));
             console.log(`Data saved with key ${key}`);
         } catch (e) {
-            console.log("Error Save Data:", e);
+            console.log('Error Save Data:', e);
         }
     };
 
@@ -15,7 +15,7 @@ const useAsyncStorage = () => {
             const value = await AsyncStorage.getItem(key);
             return value ? JSON.parse(value) : null;
         } catch (e) {
-            console.log("Error Get Data:", e);
+            console.log('Error Get Data:', e);
         }
     };
 
@@ -42,7 +42,7 @@ const useAsyncStorage = () => {
             await saveData(key, updatedData);
             console.log('Data added successfully');
         } catch (error) {
-            console.log("Error Add to Existing:", error);
+            console.log('Error Add to Existing:', error);
         }
     };
 
@@ -69,6 +69,6 @@ const useAsyncStorage = () => {
         addToExisting,
         removeFromExistingData,
     };
-}
+};
 
 export default useAsyncStorage;
