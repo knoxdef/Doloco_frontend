@@ -41,16 +41,18 @@ const useBiometric = () => {
         }
     };
 
-    const createKeys = () => {
-        rnBiometrics.createKeys()
-            .then((resultObject) => {
-                const { publicKey } = resultObject;
-                console.log(publicKey);
-            });
+    const createKeys = async () => {
+        try {
+            const resultObject = await rnBiometrics.createKeys();
+            const { publicKey } = resultObject;
+            return publicKey;
+        } catch (error) {
+            console.log('Error:', error);
+        }
     };
 
-    const deleteKeys = () => {
-        rnBiometrics.deleteKeys()
+    const deleteKeys = async () => {
+        await rnBiometrics.deleteKeys()
             .then((resultObject) => {
                 const { keysDeleted } = resultObject;
 
@@ -62,34 +64,22 @@ const useBiometric = () => {
             });
     };
 
-    const simplyPrompt = () => {
-        rnBiometrics.simplePrompt({ promptMessage: 'Confirm fingerprint' })
-            .then((resultObject) => {
-                const { success } = resultObject;
+    const simplyPrompt = async () => {
 
-                if (success) {
-                    console.log('successful biometrics provided');
-                } else {
-                    console.log('user cancelled biometric prompt');
-                }
-            })
-            .catch(() => {
-                console.log('biometrics failed');
-            });
-    };
+        try {
+            const resultObject = await rnBiometrics.simplePrompt({ promptMessage: 'Confirm fingerprint' });
+            const { success } = resultObject;
 
-    const createSignature = (message, payload) => {
-        rnBiometrics.createSignature({
-            promptMessage: message,
-            payload: payload,
-        })
-            .then((resultObject) => {
-                const { success, signature } = resultObject;
+            if (success) {
+                console.log('successful biometrics provided');
+            } else {
+                console.log('user cancelled biometric prompt');
+            }
 
-                if (success) {
-                    console.log(signature);
-                }
-            });
+            return success;
+        } catch (error) {
+            console.log('Prompt failed');
+        }
     };
 
     return {
@@ -98,7 +88,6 @@ const useBiometric = () => {
         createKeys,
         deleteKeys,
         simplyPrompt,
-        createSignature,
     };
 };
 

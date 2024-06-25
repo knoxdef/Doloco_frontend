@@ -1,7 +1,12 @@
 import axios from 'axios';
 
 const useAxios = () => {
-    const axiosInstance = axios.create({ baseURL: 'https://doloco.my.id/api/' });
+    const axiosInstance = axios.create({
+        baseURL: 'https://doloco.my.id/api/',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
 
     const getRequest = async (table) => {
         try {

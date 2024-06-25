@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, Alert, TextInput } from 'react-native';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useBiometric } from '../../../utils/hooks/useBiometric';
+import { useAxios } from '../../../utils/hooks/useAxios';
 
 const IotProfile = ({ navigation, route }) => {
   const [value, setValue] = useState('');
   const { name, serial } = route?.params;
+  const [pinValue, setPinValue] = useState('');
+
   const { removeFromExistingData } = useAsyncStorage();
-  const { checkBiometrics, checkBiometricKeyExist, createKeys, createSignature } = useBiometric();
+  const { checkBiometrics, simplyPrompt } = useBiometric();
+  const { postRequest } = useAxios();
 
   const handleDelete = () => {
     removeFromExistingData('iot_list', serial);
@@ -16,24 +20,26 @@ const IotProfile = ({ navigation, route }) => {
   };
 
   const handleAccess = async () => {
-    if (value === 'Fingerprint') {
-      const available = await checkBiometrics();
-      if (available) {
-        const result = await checkBiometricKeyExist();
-
-        if (result) {
-          createSignature('Enter Your Fingerprint', JSON.stringify({ test: 'Test' }));  //put user id and serial
+    try {
+      if (value === 'Fingerprint') {
+        if (await checkBiometrics()) {
+          if (await simplyPrompt()) {
+            console.log(serial);
+            await postRequest('fingerprint/access', { email: 'asd@asd.com', serial: serial });
+          } else {
+            console.log('Biometric prompt cancelled');
+          }
         } else {
-          createKeys();
+          console.log('Biometric not available');
         }
-
+      } else if (value === 'Pin') {
+        console.log("Pin:", pinValue);
+        setPinValue('');
       } else {
-        console.log('Biometric not available');
+        Alert.alert('Warning', 'Select Your Access Type...');
       }
-    } else if (value === 'Pin') {
-      Alert.alert('Pin');
-    } else {
-      Alert.alert('Warning', 'Select Your Access Type...');
+    } catch (error) {
+      console.error('Error during access handling:', error);
     }
   };
 
@@ -66,6 +72,20 @@ const IotProfile = ({ navigation, route }) => {
             }}
           />
 
+          {value === 'Pin' &&
+            <View style={{ width: Dimensions.get('window').width * 0.7, alignItems: 'center' }}>
+              <Text style={{ color: 'black' }}>Input Your Number</Text>
+              <TextInput
+                keyboardType='number-pad'
+                style={styles.input}
+                onChangeText={(value) => { setPinValue(value); }}
+                value={pinValue}
+                placeholder="Input Your Pin Number..."
+                placeholderTextColor={'gray'}
+              />
+            </View>
+          }
+
           <Text style={{ color: 'black' }}>Button to Access</Text>
           <TouchableOpacity onPress={handleAccess}>
             <Text style={styles.accessButton}>Open Door</Text>
@@ -80,7 +100,7 @@ const IotProfile = ({ navigation, route }) => {
           <Text style={styles.dlButton}>Delete</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 };
 
@@ -151,6 +171,18 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 6,
   },
+  input: {
+    width: '100%',
+    height: 50,
+    paddingHorizontal: 10,
+    marginVertical: 10,
+    backgroundColor: 'white',
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    borderRadius: 8,
+    color: 'black',
+  },
+
 });
 
 export default IotProfile;

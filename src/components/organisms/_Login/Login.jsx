@@ -22,7 +22,7 @@ const Login = () => {
 
       if (response.status === HttpStatusCode.Ok) {
         const responseUser = response.data.data;
-        await addToExisting('user', { id: responseUser.id, username: responseUser.name });
+        await addToExisting('user', { email: responseUser.email, username: responseUser.name });
       }
     } catch (error) {
       Alert.alert('Login failed', error.message);

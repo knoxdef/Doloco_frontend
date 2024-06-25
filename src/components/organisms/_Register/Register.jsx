@@ -24,7 +24,7 @@ const Register = () => {
 
       if (response.status === HttpStatusCode.Created) {
         const responseUser = response.data.user;
-        await addToExisting('user', { id: responseUser.id, username: responseUser.name });
+        await addToExisting('user', { email: responseUser.email, username: responseUser.name });
       }
     } catch (error) {
       Alert.alert('Registration failed', error.message);

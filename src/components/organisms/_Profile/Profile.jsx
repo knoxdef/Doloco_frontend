@@ -6,7 +6,7 @@ import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useFocusEffect } from '@react-navigation/native';
 
 const Profile = () => {
-  const [username, setUsername] = useState();
+  const [username, setUsername] = useState('');
 
   const { removeFromExistingData, getData } = useAsyncStorage();
 
@@ -14,30 +14,29 @@ const Profile = () => {
     removeFromExistingData('user');
   };
 
-  const fetchUsername = useCallback(async () => {
+  const fetchUser = useCallback(async () => {
     try {
       const data = await getData('user');
-      console.log(data);
       if (data) {
         setUsername(data.username);
       } else {
         setUsername('');
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   }, [getData]);
 
   useFocusEffect(
     useCallback(() => {
-      fetchUsername();
-    }, [fetchUsername])
+      fetchUser();
+    }, [fetchUser])
   );
 
   return (
     <SafeAreaView style={style.screen}>
       <View>
-        <Ionicons name='person-circle-outline' color={'black'} size={Dimensions.get('window').width * 0.5} />
+        <Ionicons name="person-circle-outline" color={'black'} size={Dimensions.get('window').width * 0.5} />
         <Text style={style.nameText}>{username}</Text>
       </View>
 
