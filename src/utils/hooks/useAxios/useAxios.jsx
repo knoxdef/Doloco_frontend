@@ -8,18 +8,18 @@ const useAxios = () => {
         },
     });
 
-    const getRequest = async (table) => {
+    const getRequest = async (endpoint) => {
         try {
-            const response = await axiosInstance.get(table);
+            const response = await axiosInstance.get(endpoint);
             return response;
         } catch (error) {
             console.log(error);
         }
     };
 
-    const postRequest = async (table, content) => {
+    const postRequest = async (endpoint, content) => {
         try {
-            const response = await axiosInstance.post(table, content);
+            const response = await axiosInstance.post(endpoint, content);
             return response;
         } catch (error) {
             console.log(error);
@@ -28,7 +28,14 @@ const useAxios = () => {
 
     const updateRequest = async () => { };
 
-    const deleteRequest = async () => { };
+    const deleteRequest = async (endpoint) => {
+        try {
+            const response = await axiosInstance.delete(endpoint);
+            return response;
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return {
         getRequest,

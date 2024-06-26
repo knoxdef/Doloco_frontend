@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, Alert, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, Alert, TextInput, Keyboard } from 'react-native';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useBiometric } from '../../../utils/hooks/useBiometric';
@@ -34,6 +34,7 @@ const IotProfile = ({ navigation, route }) => {
         }
       } else if (value === 'Pin') {
         setPinValue('');
+        Keyboard.dismiss();
         await postRequest('fingerprint/access', { email: 'asd@asd.com', serial: serial, pin: pinValue });
       } else {
         Alert.alert('Warning', 'Select Your Access Type...');
@@ -76,7 +77,7 @@ const IotProfile = ({ navigation, route }) => {
             <View style={{ width: Dimensions.get('window').width * 0.7, alignItems: 'center' }}>
               <Text style={{ color: 'black' }}>Input Your Number</Text>
               <TextInput
-                keyboardType='number-pad'
+                keyboardType={'number-pad'}
                 style={styles.input}
                 onChangeText={(value) => { setPinValue(value); }}
                 value={pinValue}
@@ -93,7 +94,7 @@ const IotProfile = ({ navigation, route }) => {
         </View>
       </View>
       <View style={styles.iotFooterContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('AccessData')}>
+        <TouchableOpacity onPress={() => navigation.navigate('AccessData', { serial: serial })}>
           <Text style={styles.acButton}>Access</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleDelete}>

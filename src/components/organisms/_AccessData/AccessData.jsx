@@ -1,50 +1,56 @@
-import React, {useState} from 'react';
-import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useAxios } from '../../../utils/hooks/useAxios';
 
-const initialData = [
-  {id: '1', name: 'People 1'},
-  {id: '2', name: 'People 2'},
-  {id: '3', name: 'People 3'},
-  {id: '4', name: 'People 4'},
-  {id: '5', name: 'People 5'},
-  {id: '6', name: 'People 6'},
-];
-
-const Item = ({id, name, onDelete}) => (
+const Item = ({ id, name, role, email, onDelete }) => (
   <View style={styles.item}>
-    <Text style={styles.title}>{name}</Text>
-    <TouchableOpacity onPress={() => onDelete(id)}>
+    <View>
+      <Text style={styles.title}>Name: {name} </Text>
+      <Text style={styles.title}>Role: {role} </Text>
+      <Text style={styles.title}>Email: {email} </Text>
+    </View>
+    <TouchableOpacity onPress={() => onDelete(id, email)}>
       <Icon name="delete" size={24} color="black" />
     </TouchableOpacity>
   </View>
 );
 
-const AccessData = () => {
-  const navigation = useNavigation();
+const AccessData = ({ route, navigation }) => {
+  const { serial } = route?.params;
+  const [accessList, setAccessList] = useState([]);
+  console.log(accessList);
+  const { postRequest } = useAxios();
 
-  const [data, setData] = useState(initialData);
-
-  const handleDelete = id => {
-    const newData = data.filter(item => item.id !== id);
-    setData(newData);
+  const handleDelete = async (id, email) => {
+    const newData = accessList.filter(item => item.id !== id);
+    await postRequest('access_list/delete', { serial: serial, email: email });
+    setAccessList(newData);
   };
 
   const invitationPressed = () => {
     navigation.navigate('Invitation');
   };
 
+  const fetchAccessList = useCallback(async () => {
+    const response = await postRequest('access_list/get', { serial: serial });
+    setAccessList(response.data.access_list);
+  }, [serial, postRequest]);
+
+  useEffect(() => {
+    fetchAccessList();
+  }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Devices Access</Text>
       <FlatList
-        data={data}
-        renderItem={({item}) => (
-          <Item id={item.id} name={item.name} onDelete={handleDelete} />
+        data={accessList}
+        renderItem={({ item }) => (
+          <Item id={item.id} name={item.user.name} email={item.user.email} role={item.role} onDelete={handleDelete} />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.user.id}
       />
       <View style={styles.buttonContainer}>
         <CustomButton text={'Share Devices'} onPress={invitationPressed} />
@@ -75,6 +81,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
+    color: 'black',
   },
   buttonContainer: {
     marginHorizontal: 20,
