@@ -5,6 +5,7 @@ import { Scanner, WifiInput } from '../../organisms';
 import IotProfile from '../../organisms/_IotProfile/IotProfile';
 import AccessData from '../../organisms/_AccessData/AccessData';
 import Invitation from '../../organisms/_Invitation/Invitation';
+import { Inbox } from '../../organisms/_Inbox';
 
 const HomeStackNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -56,6 +57,14 @@ const HomeStackNavigation = () => {
         component={Invitation}
         options={() => ({
           title: 'Send Invitation',
+          contentStyle: { backgroundColor: '#FFFBE9' },
+        })}
+      />
+      <Stack.Screen
+        name="Inbox"
+        component={Inbox}
+        options={() => ({
+          title: 'Inbox',
           contentStyle: { backgroundColor: '#FFFBE9' },
         })}
       />

@@ -20,7 +20,6 @@ const Item = ({ id, name, role, email, onDelete }) => (
 const AccessData = ({ route, navigation }) => {
   const { serial } = route?.params;
   const [accessList, setAccessList] = useState([]);
-  console.log(accessList);
   const { postRequest } = useAxios();
 
   const handleDelete = async (id, email) => {
@@ -30,7 +29,7 @@ const AccessData = ({ route, navigation }) => {
   };
 
   const invitationPressed = () => {
-    navigation.navigate('Invitation');
+    navigation.navigate('Invitation', { serial: serial });
   };
 
   const fetchAccessList = useCallback(async () => {

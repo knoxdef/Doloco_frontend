@@ -5,7 +5,7 @@ import useManager from '../../../utils/hooks/useManager';
 
 const Scanner = ({ navigation }) => {
     const [firstScanInitiated, setFirstScanInitiated] = useState(false);
-    const { startScanning, allDevices, startNotification, readNotification } = useManager();
+    const { startScanning, allDevices } = useManager();
     const style = StyleSheet.create({
         screen: {
             gap: 20,
@@ -39,7 +39,7 @@ const Scanner = ({ navigation }) => {
             width: '100%',
         },
         scanResultContentContainer: {
-            alignItems: 'center', gap: 10, padding: 20
+            alignItems: 'center', gap: 10, padding: 20,
         },
         scanResultItem: {
             width: '80%',

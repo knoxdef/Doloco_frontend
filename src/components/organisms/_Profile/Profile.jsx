@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useFocusEffect } from '@react-navigation/native';
 
-const Profile = () => {
+const Profile = ({ navigation }) => {
   const [username, setUsername] = useState('');
 
   const { removeFromExistingData, getData } = useAsyncStorage();
@@ -13,6 +13,10 @@ const Profile = () => {
   const handleSignOut = () => {
     removeFromExistingData('user');
   };
+
+  const handleInbox = () => {
+    navigation.navigate("Inbox");
+  }
 
   const fetchUser = useCallback(async () => {
     try {
@@ -43,6 +47,12 @@ const Profile = () => {
       <View style={style.buttonContainer}>
         <Pressable style={style.button} onPress={handleSignOut}>
           <Text style={style.text}>Log Out</Text>
+        </Pressable>
+      </View>
+
+      <View style={style.buttonContainer}>
+        <Pressable style={style.button} onPress={handleInbox}>
+          <Text style={style.text}>Inbox</Text>
         </Pressable>
       </View>
     </SafeAreaView>

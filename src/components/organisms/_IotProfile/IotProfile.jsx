@@ -95,6 +95,9 @@ const IotProfile = ({ navigation, route }) => {
       </View>
       <View style={styles.iotFooterContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('AccessData', { serial: serial })}>
+          <Text style={styles.hisButton}>History</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('AccessData', { serial: serial })}>
           <Text style={styles.acButton}>Access</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleDelete}>
@@ -145,6 +148,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     backgroundColor: '#ff3333',
+    paddingHorizontal: 20,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  hisButton: {
+    fontSize: 20,
+    color: 'white',
+    backgroundColor: 'magenta',
     paddingHorizontal: 20,
     paddingVertical: 6,
     borderRadius: 6,

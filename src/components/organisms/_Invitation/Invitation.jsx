@@ -1,16 +1,42 @@
-import React, {useState} from 'react';
-import {SafeAreaView, StyleSheet, View, Text} from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { SafeAreaView, StyleSheet, View, Text, Alert } from 'react-native';
 import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
 import CustomInput from '../../../buttonInputs/CustomInput/CustomInput';
+import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
+import { useAxios } from '../../../utils/hooks/useAxios';
 
-const Invitation = () => {
-  const [email, setEmail] = useState('');
+const Invitation = ({ route }) => {
+  const [receiverEmail, setReceiverEmail] = useState('');
+  const [senderEmail, setSenderEmail] = useState('');
   const [note, setNote] = useState('');
 
-  const sendInvitation = () => {
-    // Handle the send invitation action here
-    console.log(`Email: ${email}, Note: ${note}`);
+  const { serial } = route?.params;
+
+  const { getData } = useAsyncStorage();
+  const { postRequest } = useAxios();
+
+  const sendInvitation = async () => {
+    const response = await postRequest('inbox/send_invitation', { senderEmail: senderEmail, receiverEmail: receiverEmail, serial: serial, note: note });
+    if (response.error) {
+      Alert.alert('Error', response.error);
+    } else {
+      setReceiverEmail('');
+      setNote('');
+      Alert.alert('Success', 'Invitation is sent');
+    }
   };
+
+  const fetchUser = useCallback(async () => {
+    const data = await getData('user');
+    if (data) {
+      setSenderEmail(data.email);
+    }
+
+  }, [getData]);
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -18,8 +44,8 @@ const Invitation = () => {
         <Text style={styles.label}>Email</Text>
         <CustomInput
           placeholder={'Email'}
-          value={email}
-          setValue={setEmail}
+          value={receiverEmail}
+          setValue={setReceiverEmail}
           keyboardType={'email-address'}
         />
       </View>
@@ -27,8 +53,8 @@ const Invitation = () => {
         <Text style={styles.label}>Note</Text>
         <CustomInput
           placeholder={'Note'}
-          value={setNote}
-          setValue={note}
+          value={note}
+          setValue={setNote}
           multiline={true}
         />
       </View>
