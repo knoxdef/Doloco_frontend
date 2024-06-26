@@ -100,6 +100,34 @@ const useManager = () => {
       });
   };
 
+  // const startNotification = async (deviceId: string) => {
+  //   try {
+  //     await BleManager.startNotification(
+  //       deviceId,
+  //       SERVICE_UUID,
+  //       CHARACTERISTIC_UUID,
+  //     );
+  //     console.log('Subscribed to WiFi status characteristic');
+  //   } catch (error) {
+  //     console.error('Failed to subscribe:', error);
+  //     throw error;
+  //   }
+  // };
+
+  // const readNotification = async (deviceId: string) => {
+  //   try {
+  //     const data = await BleManager.read(
+  //       deviceId,
+  //       SERVICE_UUID,
+  //       CHARACTERISTIC_UUID,
+  //     );
+  //     const wifiStatus = data.value;
+  //     return wifiStatus;
+  //   } catch (error) {
+  //     console.log('Error:', error);
+  //   }
+  // };
+
   const connectToDevice = (
     deviceId: string,
     ssid: string,
@@ -149,6 +177,8 @@ const useManager = () => {
     startScanning,
     stopScanning,
     connectToDevice,
+    // startNotification,
+    // readNotification,
     allDevices,
   };
 };

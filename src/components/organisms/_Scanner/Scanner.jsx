@@ -5,7 +5,7 @@ import useManager from '../../../utils/hooks/useManager';
 
 const Scanner = ({ navigation }) => {
     const [firstScanInitiated, setFirstScanInitiated] = useState(false);
-    const { startScanning, stopScanning, allDevices } = useManager();
+    const { startScanning, allDevices, startNotification, readNotification } = useManager();
     const style = StyleSheet.create({
         screen: {
             gap: 20,
@@ -61,9 +61,22 @@ const Scanner = ({ navigation }) => {
         },
     });
 
-    const onItemPressHandler = (device) => {
-        stopScanning();
+    const onItemPressHandler = async (device) => {
+        // try {
+        //     await startNotification(device.id);
+        //     console.log("Test");
+        //     const wifiStatus = await readNotification(device.id);
+
+        //     console.log(wifiStatus);
+
+        //     if (wifiStatus === 'configured') {
+        //         navigation.navigate('Home');
+        //     } else {
         navigation.navigate('WifiInput', { deviceId: device.id, deviceName: device.name });
+        //     }
+        // } catch (error) {
+        //     console.error('Error:', error);
+        // }
     };
 
     return (
@@ -71,7 +84,6 @@ const Scanner = ({ navigation }) => {
             <Pressable
                 style={style.scanButton}
                 onPress={() => {
-                    // initializeBluetooth();
                     setFirstScanInitiated(true);
                     startScanning();
                 }}

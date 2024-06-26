@@ -33,8 +33,8 @@ const IotProfile = ({ navigation, route }) => {
           console.log('Biometric not available');
         }
       } else if (value === 'Pin') {
-        console.log("Pin:", pinValue);
         setPinValue('');
+        await postRequest('fingerprint/access', { email: 'asd@asd.com', serial: serial, pin: pinValue });
       } else {
         Alert.alert('Warning', 'Select Your Access Type...');
       }

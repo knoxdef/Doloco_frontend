@@ -3,11 +3,13 @@ import { Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View } 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useManager from '../../../utils/hooks/useManager';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
+import { useAxios } from '../../../utils/hooks/useAxios';
 
 const WifiInput = ({ route, navigation }) => {
     const { deviceName, deviceId } = route?.params;
     const { connectToDevice } = useManager();
-    const { addToExisting } = useAsyncStorage();
+    const { addToExisting, getData } = useAsyncStorage();
+    const { postRequest } = useAxios();
     const [deviceDetail, setDeviceDetail] = useState({ deviceName: '', wifiName: '', wifiPassword: '' });
     const style = StyleSheet.create({
         screen: {
@@ -74,9 +76,13 @@ const WifiInput = ({ route, navigation }) => {
     const handleSubmit = async () => {
         try {
             connectToDevice(deviceId, deviceDetail.wifiName, deviceDetail.wifiPassword);
+
+            const user = await getData('user');
+            await postRequest('storeAdmin', { serial: deviceName, email: user.email });
+
             await addToExisting('iot_list', { name: deviceDetail.deviceName, serial: deviceName }, Array);
             setDeviceDetail({ wifiName: '', wifiPassword: '' });
-            navigation.navigate('Home');
+            navigation.navigate('Home', { refresh: true });
         } catch (error) {
             console.log(error);
         }
