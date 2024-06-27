@@ -66,8 +66,8 @@ const Home = ({ navigation }) => {
               <TouchableOpacity onPress={(() => { navigation.navigate('FindDevice'); })}>
                 <Icon name="add-circle-outline" size={Dimensions.get('window').width * 0.3} color="black" />
               </TouchableOpacity>
-              <Text style={{ color: 'black' }}>Lets find your first doloco device</Text>
-              <Text style={{ color: 'black' }}>Click icon above</Text>
+              <Text style={styles.noListText}>Lets find your first doloco device</Text>
+              <Text style={styles.noListText}>Click icon above</Text>
             </View>
           )
         }
@@ -99,6 +99,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  noListText: {
+    color: 'grey',
+    fontSize: 20,
+    fontWeight: '400',
+  }
 });
 
 export default Home;
