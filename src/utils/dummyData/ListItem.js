@@ -13,7 +13,6 @@ export default function ListItem({name, onPress}) {
 
 const styles = StyleSheet.create({
   list: {
-    flex: 1,
     alignItems: 'center',
     padding: 10,
   },

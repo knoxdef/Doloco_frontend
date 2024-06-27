@@ -32,7 +32,7 @@ const Home = ({ navigation }) => {
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  }, [getData]);
+  }, []);
 
   useFocusEffect(
     useCallback(() => {

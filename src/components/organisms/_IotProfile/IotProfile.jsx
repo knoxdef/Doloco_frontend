@@ -79,7 +79,7 @@ const IotProfile = ({ navigation, route }) => {
               <TextInput
                 keyboardType={'number-pad'}
                 style={styles.input}
-                onChangeText={(value) => { setPinValue(value); }}
+                onChangeText={(val) => { setPinValue(val); }}
                 value={pinValue}
                 placeholder="Input Your Pin Number..."
                 placeholderTextColor={'gray'}

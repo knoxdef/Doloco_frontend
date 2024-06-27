@@ -49,10 +49,11 @@ const useAsyncStorage = () => {
     const removeFromExistingData = async (key, serial) => {
         try {
             const existingData = await getData(key);
+            const currentUser = await getData('user');
             let updatedData;
 
             if (Array.isArray(existingData)) {
-                updatedData = existingData.filter((item) => item.serial !== serial);
+                updatedData = existingData.filter((item) => item.serial !== serial && item.list_for !== currentUser.email);
                 saveData(key, updatedData);
             } else {
                 AsyncStorage.removeItem(key);
