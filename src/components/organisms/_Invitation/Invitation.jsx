@@ -16,7 +16,7 @@ const Invitation = ({ route }) => {
   const { postRequest } = useAxios();
 
   const sendInvitation = async () => {
-    const response = await postRequest('inbox/send_invitation', { senderEmail: senderEmail, receiverEmail: receiverEmail, serial: serial, note: note });
+    const response = await postRequest('inbox/invitation/send', { senderEmail: senderEmail, receiverEmail: receiverEmail, serial: serial, note: note });
     if (response.error) {
       Alert.alert('Error', response.error);
     } else {
