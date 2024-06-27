@@ -35,7 +35,7 @@ const Inbox = () => {
     const [inbox, setInbox] = useState([]);
 
     const { postRequest } = useAxios();
-    const { getData } = useAsyncStorage();
+    const { getData, addToExisting } = useAsyncStorage();
 
     const eraseFromList = (id) => {
         const newData = inbox.filter(item => item.id !== id);
@@ -50,8 +50,9 @@ const Inbox = () => {
             );
 
             if (response.status !== HttpStatusCode.BadRequest) {
-                eraseFromList(id);
+                await addToExisting('iot_list', { name: iotTool.serial, serial: iotTool.serial, list_for: receiver.email });
                 Alert.alert('Success', 'Invitation accepted');
+                eraseFromList(id);
             }
         } catch (error) {
             console.log('Error:', error);

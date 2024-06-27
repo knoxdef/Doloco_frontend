@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -20,9 +20,12 @@ const Home = ({ navigation }) => {
 
   const fetchData = useCallback(async () => {
     try {
-      const data = await getData('iot_list');
-      if (data) {
-        setIotList(data);
+      const dataIot = await getData('iot_list');
+      const dataUser = await getData('user');
+      console.log(dataIot);
+      if (dataIot) {
+        const filteredData = dataIot.filter(item => item.list_for === dataUser.email);
+        setIotList(filteredData);
       } else {
         setIotList([]);
       }
@@ -34,7 +37,10 @@ const Home = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       fetchData();
-    }, [fetchData])
+      return () => {
+        fetchData();
+      };
+    }, [])
   );
 
   return (
@@ -48,7 +54,7 @@ const Home = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {iotList.length > 0 ?
           (
-            <View>
+            <View style={styles.listView}>
               {iotList.map((iot) => (
                 <ListItem
                   key={iot.serial}
@@ -93,6 +99,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'black',
+  },
+  listView: {
+    flex: 1,
   },
   noListView: {
     flex: 1,

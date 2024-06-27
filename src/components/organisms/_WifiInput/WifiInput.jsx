@@ -80,7 +80,7 @@ const WifiInput = ({ route, navigation }) => {
             const user = await getData('user');
             await postRequest('storeAdmin', { serial: deviceName, email: user.email });
 
-            await addToExisting('iot_list', { name: deviceDetail.deviceName, serial: deviceName }, Array);
+            await addToExisting('iot_list', { name: deviceDetail.deviceName, serial: deviceName, list_for: user.email }, Array);
             setDeviceDetail({ wifiName: '', wifiPassword: '' });
             navigation.navigate('Home', { refresh: true });
         } catch (error) {
