@@ -90,22 +90,31 @@ const Inbox = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Your Inbox</Text>
-            <FlatList
-                data={inbox}
-                renderItem={({ item }) => (
-                    <Item
-                        id={item.id}
-                        note={item.note}
-                        sender={item.sender}
-                        receiver={item.receiver}
-                        iotTool={item.iot_tool}
-                        onAccept={handleAccept}
-                        onReject={handleReject}
-                    />
+            <Text style={styles.header}>Inbox</Text>
+
+            {inbox.length > 0 ? (
+                <FlatList
+                    data={inbox}
+                    renderItem={({ item }) => (
+                        <Item
+                            id={item.id}
+                            note={item.note}
+                            sender={item.sender}
+                            receiver={item.receiver}
+                            iotTool={item.iot_tool}
+                            onAccept={handleAccept}
+                            onReject={handleReject}
+                        />
+                    )}
+                    keyExtractor={item => item.id}
+                />
+            )
+                :
+                (
+                    <View style={styles.emptyContainer}>
+                        <Text style={styles.emptyText}>Your inbox is empty</Text>
+                    </View>
                 )}
-                keyExtractor={item => item.id}
-            />
         </View>
     );
 };
@@ -139,6 +148,16 @@ const styles = StyleSheet.create({
     buttonContainer: {
         marginHorizontal: 20,
         marginVertical: 10,
+    },
+    emptyContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    emptyText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'grey',
     },
 });
 
