@@ -41,7 +41,7 @@ const Register = () => {
     setloading(true);
 
     if (!validate()) {
-      setloading(false)
+      setloading(false);
       return;
     }
 
@@ -68,35 +68,42 @@ const Register = () => {
       <View style={styles.root}>
         <Text style={styles.headSignIn}>Register</Text>
 
-        <TextInput
-          style={styles.inputCointainer}
-          placeholder="Username"
-          placeholderTextColor={'grey'}
-          value={username}
-          onChangeText={(text) => setUsername(text)}
-        />
-        {errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
+        <View style={{ width: "100%" }}>
+          <TextInput
+            style={styles.inputCointainer}
+            placeholder="Username"
+            placeholderTextColor={'grey'}
+            value={username}
+            onChangeText={(text) => setUsername(text)}
+          />
+          {errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
+        </View>
 
-        <TextInput
-          style={styles.inputCointainer}
-          placeholder="Email"
-          placeholderTextColor={'grey'}
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-          autoCapitalize="none"
-        />
-        {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+        <View style={{ width: "100%" }}>
 
-        <TextInput
-          style={styles.inputCointainer}
-          placeholder="Password"
-          placeholderTextColor={'grey'}
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          secureTextEntry={true}
-          autoCapitalize="none"
-        />
-        {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+          <TextInput
+            style={styles.inputCointainer}
+            placeholder="Email"
+            placeholderTextColor={'grey'}
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+            autoCapitalize="none"
+          />
+          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+        </View>
+
+        <View style={{ width: "100%" }}>
+          <TextInput
+            style={styles.inputCointainer}
+            placeholder="Password"
+            placeholderTextColor={'grey'}
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            secureTextEntry={true}
+            autoCapitalize="none"
+          />
+          {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+        </View>
 
 
         {loading ? (

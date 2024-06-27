@@ -76,7 +76,8 @@ const getTabVisibility = (
     routeName === 'Invitation' ||
     routeName === 'History' ||
     routeName === 'FindDevice' ||
-    routeName === 'WifiInput'
+    routeName === 'WifiInput'||
+    routeName === 'Inbox'
   ) {
     return 'none';
   }

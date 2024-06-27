@@ -80,7 +80,6 @@ const Inbox = () => {
         const response = await postRequest('inbox/get', { email: user.email });
 
         if (response.data) {
-            console.log(response.data.messages);
             setInbox(response.data.messages);
         }
     }, [postRequest, getData]);
@@ -139,7 +138,7 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         padding: 20,
         borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
+        borderBottomColor: 'gray',
         gap: 30,
     },
     title: {

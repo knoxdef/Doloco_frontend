@@ -63,6 +63,7 @@ const HomeStackNavigation = () => {
         options={() => ({
           title: 'Send Invitation',
           contentStyle: { backgroundColor: '#FFFBE9' },
+          headerStyle: { backgroundColor: '#AD8B73' },
         })}
       />
       <Stack.Screen

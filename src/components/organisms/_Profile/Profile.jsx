@@ -57,7 +57,7 @@ const Profile = ({ navigation }) => {
         </Pressable>
       </View>
 
-      <View style={style.buttonContainer}>
+      {/* <View style={style.buttonContainer}>
         <Pressable style={style.button} onPress={''}>
           <Icon
             name="manage-accounts"
@@ -67,7 +67,7 @@ const Profile = ({ navigation }) => {
           />
           <Text style={style.text}>Account Settings</Text>
         </Pressable>
-      </View>
+      </View> */}
 
       <View style={style.buttonContainer}>
         <Pressable style={style.button} onPress={handleSignOut}>

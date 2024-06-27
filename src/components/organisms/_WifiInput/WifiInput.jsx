@@ -4,8 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import useManager from '../../../utils/hooks/useManager';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useAxios } from '../../../utils/hooks/useAxios';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const WifiInput = ({ route, navigation }) => {
+    const [showAlert, setShowAlert] = useState(false);
     const { deviceName, deviceId, configured } = route?.params;
     const { sendMessage, disconnectBle } = useManager();
     const { addToExisting, getData } = useAsyncStorage();
@@ -93,6 +95,16 @@ const WifiInput = ({ route, navigation }) => {
 
     return (
         <SafeAreaView style={style.screen}>
+            <AwesomeAlert
+                show={showAlert}
+                title='Success'
+                titleStyle={{ color: 'green', fontSize: 30, fontWeight: 'bold' }}
+                message='Iot Succesfully Registered'
+                onConfirmPressed={() => { setShowAlert(false); }}
+                showConfirmButton={true}
+                confirmButtonColor='green'
+                confirmText='Ok'
+            />
             <ScrollView contentContainerStyle={style.scroll}>
                 <Text style={style.title}>{deviceName}</Text>
                 <View style={style.inputContainer}>

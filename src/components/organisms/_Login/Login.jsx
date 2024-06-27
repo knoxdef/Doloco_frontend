@@ -10,6 +10,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const navigation = useNavigation();
   const { postRequest } = useAxios();
@@ -17,6 +18,12 @@ const Login = () => {
 
   const onPressLogin = async () => {
     setLoading(true);
+
+    if (!validate()) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await postRequest('login', { email: email, password: password });
 
@@ -39,28 +46,53 @@ const Login = () => {
     navigation.navigate('Forgot');
   };
 
+  const validate = () => {
+    const newErrors = {};
+
+    if (!email.includes('@')) {
+      newErrors.email = 'Email must be a valid email address.';
+    }
+    if (password.length < 1) {
+      newErrors.password = 'Password must not be empty.';
+    }
+
+    setErrors(newErrors);
+
+    // Return true if there are no errors
+    return Object.keys(newErrors).length === 0;
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.root}>
         <Text style={styles.headSignIn}>Login</Text>
 
-        <TextInput
-          style={styles.inputCointainer}
-          placeholder="Email"
-          placeholderTextColor={'grey'}
-          value={email}
-          onChangeText={text => setEmail(text)}
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.inputCointainer}
-          placeholder="Password"
-          placeholderTextColor={'grey'}
-          value={password}
-          onChangeText={text => setPassword(text)}
-          secureTextEntry={true}
-          autoCapitalize="none"
-        />
+        <View style={{ width: "100%" }}>
+          <TextInput
+            style={styles.inputCointainer}
+            placeholder="Email"
+            placeholderTextColor={'grey'}
+            value={email}
+            onChangeText={text => setEmail(text)}
+            autoCapitalize="none"
+          />
+          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+        </View>
+
+
+        <View style={{ width: "100%" }}>
+
+          <TextInput
+            style={styles.inputCointainer}
+            placeholder="Password"
+            placeholderTextColor={'grey'}
+            value={password}
+            onChangeText={text => setPassword(text)}
+            secureTextEntry={true}
+            autoCapitalize="none"
+          />
+          {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+        </View>
 
         {loading ? (
           <ActivityIndicator size="large" color="#000ff" />
@@ -129,6 +161,10 @@ const styles = StyleSheet.create({
   },
   bottomButton: {
     padding: 20,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 

@@ -4,11 +4,13 @@ import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
 import CustomInput from '../../../buttonInputs/CustomInput/CustomInput';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useAxios } from '../../../utils/hooks/useAxios';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const Invitation = ({ route }) => {
   const [receiverEmail, setReceiverEmail] = useState('');
   const [senderEmail, setSenderEmail] = useState('');
   const [note, setNote] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
 
   const { serial } = route?.params;
 
@@ -22,7 +24,7 @@ const Invitation = ({ route }) => {
     } else {
       setReceiverEmail('');
       setNote('');
-      Alert.alert('Success', 'Invitation is sent');
+      setShowAlert(true);
     }
   };
 
@@ -40,6 +42,16 @@ const Invitation = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <AwesomeAlert
+        show={showAlert}
+        title='Success'
+        titleStyle={{ color: 'green', fontSize: 30, fontWeight: 'bold' }}
+        message='Invitation sent succesfully'
+        onConfirmPressed={() => { setShowAlert(false); }}
+        showConfirmButton={true}
+        confirmButtonColor='green'
+        confirmText='Ok'
+      />
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Email</Text>
         <CustomInput

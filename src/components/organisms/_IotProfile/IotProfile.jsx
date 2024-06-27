@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, Alert, TextInput, Keyboard } from 'react-native';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useBiometric } from '../../../utils/hooks/useBiometric';
 import { useAxios } from '../../../utils/hooks/useAxios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useFocusEffect } from '@react-navigation/native';
 
 const IotProfile = ({ navigation, route }) => {
   const [value, setValue] = useState('');
   const { name, serial } = route?.params;
   const [pinValue, setPinValue] = useState('');
+  const [temp, setTemp] = useState();
 
-  const { removeFromExistingData } = useAsyncStorage();
+  const { removeFromExistingData, getData } = useAsyncStorage();
   const { checkBiometrics, simplyPrompt } = useBiometric();
   const { postRequest } = useAxios();
 
@@ -19,6 +21,21 @@ const IotProfile = ({ navigation, route }) => {
     removeFromExistingData('iot_list', serial);
     navigation.navigate('Home', { refresh: true });
   };
+
+  const fetchUserRole = useCallback(async () => {
+    const user = await getData('user');
+    const response = await postRequest('access_list/role', { email: user.email, serial: serial });
+    setTemp(response.data.Access);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserRole();
+      return () => {
+        fetchUserRole();
+      };
+    }, [])
+  );
 
   const handleAccess = async () => {
     try {
@@ -73,7 +90,7 @@ const IotProfile = ({ navigation, route }) => {
           />
 
           {value === 'Pin' &&
-            <View style={{ width: Dimensions.get('window').width * 0.7, alignItems: 'center'}}>
+            <View style={{ width: Dimensions.get('window').width * 0.7, alignItems: 'center' }}>
               <TextInput
                 keyboardType={'number-pad'}
                 style={styles.input}
@@ -99,6 +116,7 @@ const IotProfile = ({ navigation, route }) => {
           <Text >History</Text>
         </TouchableOpacity>
 
+        {/* {temp.role !== 'user' && */}
         <TouchableOpacity
           onPress={() => navigation.navigate('AccessData', { serial: serial })}
           style={{ alignItems: 'center' }}
@@ -106,6 +124,7 @@ const IotProfile = ({ navigation, route }) => {
           <Icon name="key" size={30} color="black" />
           <Text >Access</Text>
         </TouchableOpacity>
+        {/* } */}
 
         <TouchableOpacity
           onPress={handleDelete}
