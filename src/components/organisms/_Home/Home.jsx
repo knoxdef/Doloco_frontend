@@ -7,6 +7,7 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ListItem from '../../../utils/dummyData/ListItem';
@@ -17,6 +18,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const Home = ({ navigation }) => {
   const [iotList, setIotList] = useState([]);
   const { getData } = useAsyncStorage();
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -43,6 +45,13 @@ const Home = ({ navigation }) => {
     }, [])
   );
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchData();
+
+    setTimeout(() => { setRefreshing(false); }, 2000);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.header}>
@@ -51,7 +60,15 @@ const Home = ({ navigation }) => {
           <Ionicons name="add-circle-outline" size={35} color={'black'} />
         </TouchableOpacity>
       </View>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+      >
         {iotList.length > 0 ?
           (
             <View style={styles.listView}>
@@ -78,7 +95,7 @@ const Home = ({ navigation }) => {
           )
         }
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 };
 
