@@ -59,6 +59,11 @@ const Scanner = ({ navigation }) => {
         text: {
             color: 'black',
         },
+        noFirstInitiationText: {
+            color: 'black',
+            fontSize: 20,
+            fontWeight: '900',
+        }
     });
 
     const onItemPressHandler = async (device) => {
@@ -81,6 +86,7 @@ const Scanner = ({ navigation }) => {
 
     return (
         <SafeAreaView style={style.screen}>
+            {!firstScanInitiated ? (<Text style={style.noFirstInitiationText}>Let's start to find your device</Text>) : ('')}
             <Pressable
                 style={style.scanButton}
                 onPress={() => {
@@ -90,6 +96,8 @@ const Scanner = ({ navigation }) => {
             >
                 <Text style={style.scanButtonText}>{firstScanInitiated === true ? 'Scan Again' : 'Scan Now'}</Text>
             </Pressable>
+            {!firstScanInitiated ? (<Text style={style.noFirstInitiationText}>Click button above</Text>) : ('')}
+
             <View style={style.scanResultContainer}>
                 <Text style={style.scanResultHeader}>Available Device</Text>
                 <ScrollView
