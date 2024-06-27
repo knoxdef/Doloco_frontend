@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useFocusEffect } from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Profile = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -15,8 +16,8 @@ const Profile = ({ navigation }) => {
   };
 
   const handleInbox = () => {
-    navigation.navigate("Inbox");
-  }
+    navigation.navigate('Inbox');
+  };
 
   const fetchUser = useCallback(async () => {
     try {
@@ -45,17 +46,41 @@ const Profile = ({ navigation }) => {
       </View>
 
       <View style={style.buttonContainer}>
-        <Pressable style={style.button} onPress={handleSignOut}>
-          <Text style={style.text}>Log Out</Text>
+        <Pressable style={style.button} onPress={handleInbox}>
+          <Icon
+            name="mail"
+            size={30}
+            color="black"
+            style={style.icon}
+          />
+          <Text style={style.text}>Inbox</Text>
         </Pressable>
       </View>
 
       <View style={style.buttonContainer}>
-        <Pressable style={style.button} onPress={handleInbox}>
-          <Text style={style.text}>Inbox</Text>
+        <Pressable style={style.button} onPress={''}>
+          <Icon
+            name="manage-accounts"
+            size={30}
+            color="black"
+            style={style.icon}
+          />
+          <Text style={style.text}>Account Settings</Text>
         </Pressable>
       </View>
-    </SafeAreaView>
+
+      <View style={style.buttonContainer}>
+        <Pressable style={style.button} onPress={handleSignOut}>
+          <Icon
+            name="logout"
+            size={30}
+            color="black"
+            style={style.icon}
+          />
+          <Text style={style.text}>Log Out</Text>
+        </Pressable>
+      </View>
+    </SafeAreaView >
   );
 };
 
@@ -69,6 +94,8 @@ const style = StyleSheet.create({
   },
   text: {
     color: 'black',
+    fontSize: 18,
+    flex: 7.5,
   },
   nameText: {
     color: 'black',
@@ -84,11 +111,18 @@ const style = StyleSheet.create({
   button: {
     width: '80%',
     paddingVertical: 20,
+    paddingHorizontal: 30,
     borderWidth: 3,
     borderRadius: Dimensions.get('window').width,
     borderColor: '#AD8B73',
     backgroundColor: '#E3CAA5',
     alignItems: 'center',
+    justifyContent: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  icon: {
+    flex: 2.5,
   },
 });
 

@@ -51,10 +51,10 @@ const Inbox = () => {
 
             if (response.status !== HttpStatusCode.BadRequest) {
                 eraseFromList(id);
-                Alert.alert("Success", "Invitation accepted")
+                Alert.alert('Success', 'Invitation accepted');
             }
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
         }
     };
 
@@ -67,10 +67,10 @@ const Inbox = () => {
 
             if (response.status !== HttpStatusCode.BadRequest) {
                 eraseFromList(id);
-                Alert.alert("Success", "Invitation rejected")
+                Alert.alert('Success', 'Invitation rejected');
             }
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
         }
     };
 
