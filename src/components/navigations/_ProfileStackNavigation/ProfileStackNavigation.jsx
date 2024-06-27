@@ -12,6 +12,7 @@ const ProfileStackNavigation = () => {
                 options={() => ({
                     title: 'Profile',
                     contentStyle: { backgroundColor: '#FFFBE9' },
+                    headerShown: false,
                 })}
             />
         </Stack.Navigator>

@@ -4,6 +4,7 @@ import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useBiometric } from '../../../utils/hooks/useBiometric';
 import { useAxios } from '../../../utils/hooks/useAxios';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const IotProfile = ({ navigation, route }) => {
   const [value, setValue] = useState('');
@@ -55,8 +56,6 @@ const IotProfile = ({ navigation, route }) => {
         <Text style={styles.toolName}>{name}</Text>
         <View style={styles.switchContainer}>
 
-          <Text style={{ color: 'black' }}>Select Your Access Type:</Text>
-
           <Dropdown
             style={styles.dropdown}
             itemTextStyle={styles.dropdownItemText}
@@ -74,8 +73,7 @@ const IotProfile = ({ navigation, route }) => {
           />
 
           {value === 'Pin' &&
-            <View style={{ width: Dimensions.get('window').width * 0.7, alignItems: 'center' }}>
-              <Text style={{ color: 'black' }}>Input Your Number</Text>
+            <View style={{ width: Dimensions.get('window').width * 0.7, alignItems: 'center'}}>
               <TextInput
                 keyboardType={'number-pad'}
                 style={styles.input}
@@ -87,21 +85,34 @@ const IotProfile = ({ navigation, route }) => {
             </View>
           }
 
-          <Text style={{ color: 'black' }}>Button to Access</Text>
           <TouchableOpacity onPress={handleAccess}>
             <Text style={styles.accessButton}>Open Door</Text>
           </TouchableOpacity>
         </View>
       </View>
       <View style={styles.iotFooterContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('AccessData', { serial: serial })}>
-          <Text style={styles.hisButton}>History</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('History')}
+          style={{ alignItems: 'center' }}
+        >
+          <Icon name="restore" size={30} color="black" />
+          <Text >History</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('AccessData', { serial: serial })}>
-          <Text style={styles.acButton}>Access</Text>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AccessData', { serial: serial })}
+          style={{ alignItems: 'center' }}
+        >
+          <Icon name="key" size={30} color="black" />
+          <Text >Access</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleDelete}>
-          <Text style={styles.dlButton}>Delete</Text>
+
+        <TouchableOpacity
+          onPress={handleDelete}
+          style={{ alignItems: 'center' }}
+        >
+          <Icon name="delete" size={30} color="black" />
+          <Text>Delete</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView >
@@ -135,6 +146,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
+    backgroundColor: 'rgba(52, 52, 52, 0.5)',
   },
   acButton: {
     fontSize: 20,
@@ -162,11 +174,11 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     width: Dimensions.get('window').width * 0.7,
-    height: Dimensions.get('window').width * 0.1,
+    height: Dimensions.get('window').width * 0.12,
     borderColor: 'gray',
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     backgroundColor: 'white',
   },
   dropdownItemText: {
@@ -190,7 +202,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     backgroundColor: 'white',
     borderColor: 'gray',
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderRadius: 8,
     color: 'black',
   },

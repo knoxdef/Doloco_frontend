@@ -6,6 +6,7 @@ import {Login} from '../../organisms/_Login';
 import {Register} from '../../organisms/_Register';
 import TabNavigator from '../_TabNavigator/TabNavigator';
 import {useAsyncStorage} from '../../../utils/hooks/useAsyncStorage';
+import { ForgotPassword } from '../../organisms/_ForgotPassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +42,7 @@ const Navigator = () => {
             <>
               <Stack.Screen name="Login" component={Login} />
               <Stack.Screen name="Register" component={Register} />
+              <Stack.Screen name="Forgot" component={ForgotPassword} />
             </>
           )}
         </Stack.Navigator>

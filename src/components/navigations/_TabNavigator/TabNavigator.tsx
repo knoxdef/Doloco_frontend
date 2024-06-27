@@ -71,9 +71,12 @@ const getTabVisibility = (
   const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed';
 
   if (
-    routeName == 'IotProfile' ||
-    routeName == 'AccessData' ||
-    routeName == 'Invitation'
+    routeName === 'IotProfile' ||
+    routeName === 'AccessData' ||
+    routeName === 'Invitation' ||
+    routeName === 'History' ||
+    routeName === 'FindDevice' ||
+    routeName === 'WifiInput'
   ) {
     return 'none';
   }

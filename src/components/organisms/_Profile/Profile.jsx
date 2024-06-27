@@ -91,6 +91,7 @@ const style = StyleSheet.create({
     paddingVertical: 20,
     gap: 50,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   text: {
     color: 'black',

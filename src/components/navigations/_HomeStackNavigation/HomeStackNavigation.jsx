@@ -6,6 +6,7 @@ import IotProfile from '../../organisms/_IotProfile/IotProfile';
 import AccessData from '../../organisms/_AccessData/AccessData';
 import Invitation from '../../organisms/_Invitation/Invitation';
 import { Inbox } from '../../organisms/_Inbox';
+import { History } from '../../organisms/_History';
 
 const HomeStackNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -26,14 +27,16 @@ const HomeStackNavigation = () => {
         options={() => ({
           title: 'Add New Device',
           contentStyle: { backgroundColor: '#FFFBE9' },
+          headerStyle: { backgroundColor: '#AD8B73' },
         })}
       />
       <Stack.Screen
         name="WifiInput"
         component={WifiInput}
         options={() => ({
-          title: 'Input Wifi Information',
+          title: 'Input your setup',
           contentStyle: { backgroundColor: '#FFFBE9' },
+          headerStyle: { backgroundColor: '#AD8B73' },
         })}
       />
       <Stack.Screen
@@ -42,6 +45,7 @@ const HomeStackNavigation = () => {
         options={({ route }) => ({
           title: route.params?.name,
           contentStyle: { backgroundColor: '#FFFBE9' },
+          headerStyle: { backgroundColor: '#AD8B73' },
         })}
       />
       <Stack.Screen
@@ -50,6 +54,7 @@ const HomeStackNavigation = () => {
         options={() => ({
           title: 'Data Pengguna IoT',
           contentStyle: { backgroundColor: '#FFFBE9' },
+          headerStyle: { backgroundColor: '#AD8B73' },
         })}
       />
       <Stack.Screen
@@ -66,6 +71,16 @@ const HomeStackNavigation = () => {
         options={() => ({
           title: 'Inbox',
           contentStyle: { backgroundColor: '#FFFBE9' },
+          headerStyle: { backgroundColor: '#AD8B73' },
+        })}
+      />
+      <Stack.Screen
+        name="History"
+        component={History}
+        options={() => ({
+          title: 'History',
+          contentStyle: { backgroundColor: '#FFFBE9' },
+          headerStyle: { backgroundColor: '#AD8B73' },
         })}
       />
     </Stack.Navigator>

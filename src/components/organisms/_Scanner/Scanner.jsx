@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useManager from '../../../utils/hooks/useManager';
 
 const Scanner = ({ navigation }) => {
     const [firstScanInitiated, setFirstScanInitiated] = useState(false);
-    const { startScanning, allDevices } = useManager();
+    const { checkBluetoothState, startScanning, connectToDevice, startNotification, readNotification, allDevices } = useManager();
     const style = StyleSheet.create({
         screen: {
             gap: 20,
@@ -67,21 +67,21 @@ const Scanner = ({ navigation }) => {
     });
 
     const onItemPressHandler = async (device) => {
-        // try {
-        //     await startNotification(device.id);
-        //     console.log("Test");
-        //     const wifiStatus = await readNotification(device.id);
+        try {
+            await connectToDevice(device.id);
+            await startNotification(device.id)
+            const wifiStatus = await readNotification(device.id);
+            const stringValue = String.fromCharCode.apply(null, new Uint8Array(wifiStatus));
 
-        //     console.log(wifiStatus);
+            if (stringValue === 'configured') {
+                navigation.navigate('WifiInput', { deviceId: device.id, deviceName: device.name, configure: true });
+            } else {
+                navigation.navigate('WifiInput', { deviceId: device.id, deviceName: device.name, configured: false });
+            }
 
-        //     if (wifiStatus === 'configured') {
-        //         navigation.navigate('Home');
-        //     } else {
-        navigation.navigate('WifiInput', { deviceId: device.id, deviceName: device.name });
-        //     }
-        // } catch (error) {
-        //     console.error('Error:', error);
-        // }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     return (
@@ -89,9 +89,14 @@ const Scanner = ({ navigation }) => {
             {!firstScanInitiated ? (<Text style={style.noFirstInitiationText}>Let's start to find your device</Text>) : ('')}
             <Pressable
                 style={style.scanButton}
-                onPress={() => {
-                    setFirstScanInitiated(true);
-                    startScanning();
+                onPress={async () => {
+                    const test = await checkBluetoothState();
+                    if (test === 'on') {
+                        setFirstScanInitiated(true);
+                        startScanning();
+                    } else {
+                        Alert.alert("Warning", "Please turn on your bluetooth to use this service.");
+                    }
                 }}
             >
                 <Text style={style.scanButtonText}>{firstScanInitiated === true ? 'Scan Again' : 'Scan Now'}</Text>

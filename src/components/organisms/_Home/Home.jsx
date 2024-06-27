@@ -24,7 +24,6 @@ const Home = ({ navigation }) => {
     try {
       const dataIot = await getData('iot_list');
       const dataUser = await getData('user');
-      console.log(dataIot);
       if (dataIot) {
         const filteredData = dataIot.filter(item => item.list_for === dataUser.email);
         setIotList(filteredData);

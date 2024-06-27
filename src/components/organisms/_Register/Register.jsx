@@ -11,14 +11,40 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setloading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const { postRequest } = useAxios();
   const { addToExisting } = useAsyncStorage();
 
   const navigation = useNavigation();
 
+  const validate = () => {
+    const newErrors = {};
+
+    if (username.length < 5) {
+      newErrors.username = 'Username must be at least 5 characters long.';
+    }
+    if (!email.includes('@')) {
+      newErrors.email = 'Email must be a valid email address.';
+    }
+    if (password.length < 7) {
+      newErrors.password = 'Password must be at least 7 characters long.';
+    }
+
+    setErrors(newErrors);
+
+    // Return true if there are no errors
+    return Object.keys(newErrors).length === 0;
+  };
+
   const onPressregister = async () => {
     setloading(true);
+
+    if (!validate()) {
+      setloading(false)
+      return;
+    }
+
     try {
       const response = await postRequest('register', { name: username, email: email, password: password });
 
@@ -40,7 +66,7 @@ const Register = () => {
   return (
     <View style={styles.container}>
       <View style={styles.root}>
-        <Text style={styles.headSignIn}>Sign Up</Text>
+        <Text style={styles.headSignIn}>Register</Text>
 
         <TextInput
           style={styles.inputCointainer}
@@ -49,6 +75,8 @@ const Register = () => {
           value={username}
           onChangeText={(text) => setUsername(text)}
         />
+        {errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
+
         <TextInput
           style={styles.inputCointainer}
           placeholder="Email"
@@ -57,6 +85,8 @@ const Register = () => {
           onChangeText={(text) => setEmail(text)}
           autoCapitalize="none"
         />
+        {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+
         <TextInput
           style={styles.inputCointainer}
           placeholder="Password"
@@ -66,6 +96,8 @@ const Register = () => {
           secureTextEntry={true}
           autoCapitalize="none"
         />
+        {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+
 
         {loading ? (
           <ActivityIndicator size="large" color="#000ff" />
@@ -111,11 +143,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000000',
   },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+  },
   root: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    gap: 15,
   },
   headSignIn: {
     fontWeight: 'bold',

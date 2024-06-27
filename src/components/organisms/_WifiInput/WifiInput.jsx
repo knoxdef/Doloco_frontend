@@ -6,8 +6,8 @@ import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useAxios } from '../../../utils/hooks/useAxios';
 
 const WifiInput = ({ route, navigation }) => {
-    const { deviceName, deviceId } = route?.params;
-    const { connectToDevice } = useManager();
+    const { deviceName, deviceId, configured } = route?.params;
+    const { sendMessage, disconnectBle } = useManager();
     const { addToExisting, getData } = useAsyncStorage();
     const { postRequest } = useAxios();
     const [deviceDetail, setDeviceDetail] = useState({ deviceName: '', wifiName: '', wifiPassword: '' });
@@ -75,7 +75,10 @@ const WifiInput = ({ route, navigation }) => {
 
     const handleSubmit = async () => {
         try {
-            connectToDevice(deviceId, deviceDetail.wifiName, deviceDetail.wifiPassword);
+            if (configured) {
+                await sendMessage(deviceId, deviceDetail.wifiName, deviceDetail.wifiPassword);
+            }
+            await disconnectBle(deviceId);
 
             const user = await getData('user');
             await postRequest('storeAdmin', { serial: deviceName, email: user.email });
@@ -99,25 +102,32 @@ const WifiInput = ({ route, navigation }) => {
                         onChangeText={handleDeviceNameChange}
                         value={deviceDetail.deviceName}
                     />
-                    <Text style={style.text}>Wifi SSID:</Text>
-                    <TextInput
-                        style={style.textInput}
-                        onChangeText={handleWifiNameChange}
-                        value={deviceDetail.wifiName}
-                    />
-                    <Text style={style.text}>Wifi Password:</Text>
-                    <TextInput
-                        secureTextEntry={true}
-                        style={style.textInput}
-                        onChangeText={handleWifiPasswordChange}
-                        value={deviceDetail.wifiPassword}
-                    />
+                    {configured &&
+                        (
+                            <>
+                                <Text style={style.text}>Wifi SSID:</Text>
+                                <TextInput
+                                    style={style.textInput}
+                                    onChangeText={handleWifiNameChange}
+                                    value={deviceDetail.wifiName}
+                                />
+                                <Text style={style.text}>Wifi Password:</Text>
+                                <TextInput
+                                    secureTextEntry={true}
+                                    style={style.textInput}
+                                    onChangeText={handleWifiPasswordChange}
+                                    value={deviceDetail.wifiPassword}
+                                />
+                            </>
+
+                        )
+                    }
                 </View>
 
                 <Pressable
                     style={style.submitButton}
                     onPress={handleSubmit}>
-                    <Text style={style.text}>Connect and Sumbit</Text>
+                    <Text style={style.text}>Sumbit</Text>
                 </Pressable>
             </ScrollView>
         </SafeAreaView>

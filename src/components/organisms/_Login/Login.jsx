@@ -35,7 +35,9 @@ const Login = () => {
     navigation.navigate('Register');
   };
 
-  const onPressForgotPassword = () => { };
+  const onPressForgotPassword = () => {
+    navigation.navigate('Forgot');
+  };
 
   return (
     <View style={styles.container}>
@@ -118,6 +120,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    gap: 15,
   },
   headSignIn: {
     fontWeight: 'bold',

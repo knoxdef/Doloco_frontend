@@ -90,6 +90,15 @@ const useManager = () => {
     });
   };
 
+  const checkBluetoothState = async () => {
+    try {
+      const state = await BleManager.checkState();
+      return state;
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   const stopScanning = () => {
     BleManager.stopScan()
       .then(() => {
@@ -100,49 +109,48 @@ const useManager = () => {
       });
   };
 
-  // const startNotification = async (deviceId: string) => {
-  //   try {
-  //     await BleManager.startNotification(
-  //       deviceId,
-  //       SERVICE_UUID,
-  //       CHARACTERISTIC_UUID,
-  //     );
-  //     console.log('Subscribed to WiFi status characteristic');
-  //   } catch (error) {
-  //     console.error('Failed to subscribe:', error);
-  //     throw error;
-  //   }
-  // };
+  const startNotification = async (deviceId: string) => {
+    try {
+      await BleManager.startNotification(
+        deviceId,
+        SERVICE_UUID,
+        CHARACTERISTIC_UUID,
+      );
+      console.log('Subscribed to WiFi status characteristic');
+    } catch (error) {
+      console.error('Failed to subscribe:', error);
+      throw error;
+    }
+  };
 
-  // const readNotification = async (deviceId: string) => {
-  //   try {
-  //     const data = await BleManager.read(
-  //       deviceId,
-  //       SERVICE_UUID,
-  //       CHARACTERISTIC_UUID,
-  //     );
-  //     const wifiStatus = data.value;
-  //     return wifiStatus;
-  //   } catch (error) {
-  //     console.log('Error:', error);
-  //   }
-  // };
+  const readNotification = async (deviceId: string) => {
+    try {
+      const data = await BleManager.read(
+        deviceId,
+        SERVICE_UUID,
+        CHARACTERISTIC_UUID,
+      );
+      const wifiStatus = data;
+      return wifiStatus;
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
 
-  const connectToDevice = (
+  const connectToDevice = async (
     deviceId: string,
-    ssid: string,
-    password: string,
+    // ssid: string,
+    // password: string,
   ) => {
-    BleManager.connect(deviceId)
-      .then(() => {
-        return BleManager.retrieveServices(deviceId);
-      })
-      .then(() => {
-        sendMessage(deviceId, ssid, password);
-      })
-      .catch(error => {
-        console.log('Connection error', error);
-      });
+    await BleManager.connect(deviceId).then(() => {
+      return BleManager.retrieveServices(deviceId);
+    });
+    // .then(() => {
+    //   sendMessage(deviceId, ssid, password);
+    // })
+    // .catch(error => {
+    //   console.log('Connection error', error);
+    // });
   };
 
   const sendMessage = async (
@@ -169,6 +177,10 @@ const useManager = () => {
     }
   };
 
+  const disconnectBle = async id => {
+    await BleManager.disconnect(id);
+  };
+
   const stringToBytes = (str: string) => {
     return Array.from(new TextEncoder().encode(str));
   };
@@ -177,8 +189,11 @@ const useManager = () => {
     startScanning,
     stopScanning,
     connectToDevice,
-    // startNotification,
-    // readNotification,
+    startNotification,
+    readNotification,
+    sendMessage,
+    disconnectBle,
+    checkBluetoothState,
     allDevices,
   };
 };
