@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, Alert, TextInput, Keyboard } from 'react-native';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -26,7 +26,7 @@ const IotProfile = ({ navigation, route }) => {
     const user = await getData('user');
     const response = await postRequest('access_list/role', { email: user.email, serial: serial });
     setTemp(response.data.Access);
-  }, []);
+  }, [getData, postRequest, serial]);
 
   useFocusEffect(
     useCallback(() => {
@@ -116,15 +116,15 @@ const IotProfile = ({ navigation, route }) => {
           <Text >History</Text>
         </TouchableOpacity>
 
-        {/* {temp.role !== 'user' && */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate('AccessData', { serial: serial })}
-          style={{ alignItems: 'center' }}
-        >
-          <Icon name="key" size={30} color="black" />
-          <Text >Access</Text>
-        </TouchableOpacity>
-        {/* } */}
+        {temp && temp.role !== 'user' &&
+          <TouchableOpacity
+            onPress={() => navigation.navigate('AccessData', { serial: serial })}
+            style={{ alignItems: 'center' }}
+          >
+            <Icon name="key" size={30} color="black" />
+            <Text >Access</Text>
+          </TouchableOpacity>
+        }
 
         <TouchableOpacity
           onPress={handleDelete}
