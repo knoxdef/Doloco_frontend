@@ -3,24 +3,30 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native
 import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useAxios } from '../../../utils/hooks/useAxios';
+import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 
-const Item = ({ id, name, role, email, onDelete }) => (
+const Item = ({ id, name, role, email, onDelete, user }) => (
   <View style={styles.item}>
     <View>
       <Text style={styles.title}>Name: {name} </Text>
       <Text style={styles.title}>Role: {role} </Text>
       <Text style={styles.title}>Email: {email} </Text>
     </View>
-    <TouchableOpacity onPress={() => onDelete(id, email)}>
-      <Icon name="delete" size={24} color="black" />
-    </TouchableOpacity>
+    {user && email !== user.email ?
+      <TouchableOpacity onPress={() => onDelete(id, email)}>
+        <Icon name="delete" size={24} color="black" />
+      </TouchableOpacity>
+      : null
+    }
   </View>
 );
 
 const AccessData = ({ route, navigation }) => {
   const { serial } = route?.params;
+  const [user, setUser] = useState();
   const [accessList, setAccessList] = useState([]);
   const { postRequest } = useAxios();
+  const { getData } = useAsyncStorage();
 
   const handleDelete = async (id, email) => {
     const newData = accessList.filter(item => item.id !== id);
@@ -32,12 +38,18 @@ const AccessData = ({ route, navigation }) => {
     navigation.navigate('Invitation', { serial: serial });
   };
 
+  const fetchUser = useCallback(async () => {
+    const response = await getData('user');
+    setUser(response);
+  }, [getData]);
+
   const fetchAccessList = useCallback(async () => {
     const response = await postRequest('access_list/get', { serial: serial });
     setAccessList(response.data.access_list);
   }, [serial, postRequest]);
 
   useEffect(() => {
+    fetchUser();
     fetchAccessList();
   }, []);
 
@@ -47,7 +59,7 @@ const AccessData = ({ route, navigation }) => {
       <FlatList
         data={accessList}
         renderItem={({ item }) => (
-          <Item id={item.id} name={item.user.name} email={item.user.email} role={item.role} onDelete={handleDelete} />
+          <Item id={item.id} name={item.user.name} email={item.user.email} role={item.role} onDelete={handleDelete} user={user} />
         )}
         keyExtractor={item => item.user.id}
       />

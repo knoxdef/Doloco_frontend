@@ -77,13 +77,13 @@ const WifiInput = ({ route, navigation }) => {
 
     const handleSubmit = async () => {
         try {
-            if (configured) {
+            if (!configured) {
                 await sendMessage(deviceId, deviceDetail.wifiName, deviceDetail.wifiPassword);
             }
             await disconnectBle(deviceId);
 
             const user = await getData('user');
-            await postRequest('storeAdmin', { serial: deviceName, email: user.email });
+            await postRequest('storeAccess', { serial: deviceName, email: user.email });
 
             await addToExisting('iot_list', { name: deviceDetail.deviceName, serial: deviceName, list_for: user.email }, Array);
             setDeviceDetail({ wifiName: '', wifiPassword: '' });
@@ -114,7 +114,7 @@ const WifiInput = ({ route, navigation }) => {
                         onChangeText={handleDeviceNameChange}
                         value={deviceDetail.deviceName}
                     />
-                    {configured &&
+                    {!configured &&
                         (
                             <>
                                 <Text style={style.text}>Wifi SSID:</Text>
