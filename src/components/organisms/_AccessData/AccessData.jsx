@@ -12,7 +12,7 @@ const Item = ({ id, name, role, email, onDelete, user }) => (
       <Text style={styles.title}>Role: {role} </Text>
       <Text style={styles.title}>Email: {email} </Text>
     </View>
-    {user && email !== user.email ?
+    {user && role !== 'admin' ?
       <TouchableOpacity onPress={() => onDelete(id, email)}>
         <Icon name="delete" size={24} color="black" />
       </TouchableOpacity>

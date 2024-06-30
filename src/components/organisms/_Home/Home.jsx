@@ -14,19 +14,21 @@ import ListItem from '../../../utils/dummyData/ListItem';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useAxios } from '../../../utils/hooks/useAxios';
 
 const Home = ({ navigation }) => {
   const [iotList, setIotList] = useState([]);
-  const { getData } = useAsyncStorage();
   const [refreshing, setRefreshing] = useState(false);
+  const { getData } = useAsyncStorage();
+  const { postRequest } = useAxios();
 
   const fetchData = useCallback(async () => {
     try {
-      const dataIot = await getData('iot_list');
       const dataUser = await getData('user');
-      if (dataIot) {
-        const filteredData = dataIot.filter(item => item.list_for === dataUser.email);
-        setIotList(filteredData);
+      const dataAccess = await postRequest('access_list/get', { email: dataUser.email });
+      const response = dataAccess.data;
+      if (dataAccess) {
+        setIotList(response.access_list);
       } else {
         setIotList([]);
       }
@@ -38,9 +40,6 @@ const Home = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       fetchData();
-      return () => {
-        fetchData();
-      };
     }, [])
   );
 
@@ -73,10 +72,10 @@ const Home = ({ navigation }) => {
             <View style={styles.listView}>
               {iotList.map((iot) => (
                 <ListItem
-                  key={iot.serial}
-                  name={iot.name}
+                  key={iot.id}
+                  name={iot.iot_tool.serial}
                   onPress={() =>
-                    navigation.navigate('IotProfile', { name: iot.name, serial: iot.serial })
+                    navigation.navigate('IotProfile', { name: iot.iot_tool.serial, serial: iot.iot_tool.serial })
                   }
                 />
               ))}

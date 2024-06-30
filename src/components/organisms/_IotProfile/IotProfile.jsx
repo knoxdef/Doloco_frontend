@@ -9,9 +9,10 @@ import { useFocusEffect } from '@react-navigation/native';
 
 const IotProfile = ({ navigation, route }) => {
   const [value, setValue] = useState('');
-  const { name, serial } = route?.params;
   const [pinValue, setPinValue] = useState('');
   const [temp, setTemp] = useState();
+  const [user, setUser] = useState();
+  const { name, serial } = route?.params;
 
   const { removeFromExistingData, getData } = useAsyncStorage();
   const { checkBiometrics, simplyPrompt } = useBiometric();
@@ -24,6 +25,7 @@ const IotProfile = ({ navigation, route }) => {
 
   const fetchUserRole = useCallback(async () => {
     const user = await getData('user');
+    setUser(user);
     const response = await postRequest('access_list/role', { email: user.email, serial: serial });
     setTemp(response.data.Access);
   }, [getData, postRequest, serial]);
@@ -43,7 +45,7 @@ const IotProfile = ({ navigation, route }) => {
         if (await checkBiometrics()) {
           if (await simplyPrompt()) {
             console.log(serial);
-            await postRequest('fingerprint/access', { email: 'asd@asd.com', serial: serial });
+            await postRequest('fingerprint/access', { email: user.email, serial: serial });
           } else {
             console.log('Biometric prompt cancelled');
           }

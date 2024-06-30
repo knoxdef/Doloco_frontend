@@ -57,18 +57,6 @@ const Profile = ({ navigation }) => {
         </Pressable>
       </View>
 
-      {/* <View style={style.buttonContainer}>
-        <Pressable style={style.button} onPress={''}>
-          <Icon
-            name="manage-accounts"
-            size={30}
-            color="black"
-            style={style.icon}
-          />
-          <Text style={style.text}>Account Settings</Text>
-        </Pressable>
-      </View> */}
-
       <View style={style.buttonContainer}>
         <Pressable style={style.button} onPress={handleSignOut}>
           <Icon
