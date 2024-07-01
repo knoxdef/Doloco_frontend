@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { Alert, ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useAxios } from '../../../utils/hooks/useAxios';
 import { HttpStatusCode } from 'axios';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
-const Login = () => {
+const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,7 +16,6 @@ const Login = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [responseUser, setResponseUser] = useState();
 
-  const navigation = useNavigation();
   const { postRequest } = useAxios();
   const { addToExisting } = useAsyncStorage();
 
@@ -35,7 +33,7 @@ const Login = () => {
       if (response.status === HttpStatusCode.Ok) {
         setShowAlert(true);
         setAlertTitle('Success');
-        setAlertMessage('Login Successfully, click button below to continue');
+        setAlertMessage('Login Successfully, click button below to continue to home page');
         setResponseUser(response.data.data);
       } else {
         throw errors;
@@ -43,7 +41,7 @@ const Login = () => {
     } catch (error) {
       setShowAlert(true);
       setAlertTitle('Error');
-      setAlertMessage('Login Failed');
+      setAlertMessage('Login Failed, please check again your email and password. click button below to close pop up');
     } finally {
       setLoading(false);
     }
@@ -79,12 +77,18 @@ const Login = () => {
         title={alertTitle}
         titleStyle={{ color: alertTitle === 'Success' ? 'green' : 'red', fontSize: 30, fontWeight: 'bold' }}
         message={alertMessage}
-        showConfirmButton={true}
-        confirmButtonColor={alertTitle === 'Success' ? 'green' : 'red'}
-        confirmText='Go to home'
+        showConfirmButton={alertTitle === 'Success'}
+        showCancelButton={alertTitle !== 'Success'}
+        confirmButtonColor={'green'}
+        cancelButtonColor={'red'}
+        confirmText={'Go to home'}
+        cancelText={'Close'}
         onConfirmPressed={async () => {
           setShowAlert(false);
           await addToExisting('user', { email: responseUser.email, username: responseUser.name });
+        }}
+        onCancelPressed={() => {
+          setShowAlert(false);
         }}
         closeOnTouchOutside={false}
       />
