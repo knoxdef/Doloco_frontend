@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useAxios } from '../../../utils/hooks/useAxios';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 const Item = ({ id, name, date, time }) => (
     <View style={styles.item}>
@@ -11,12 +11,6 @@ const Item = ({ id, name, date, time }) => (
         </View>
     </View>
 );
-
-const dummy = [
-    { id: 1, name: 'John Doe', date: '27/06/2024', time: '17:20:31' },
-    { id: 2, name: 'Asd', date: '27/06/2024', time: '17:22:01' },
-    { id: 3, name: 'Asd', date: '27/06/2024', time: '17:23:22' },
-];
 
 const History = ({ route }) => {
     const [historyData, setHistoryData] = useState([]);
@@ -29,10 +23,10 @@ const History = ({ route }) => {
         const data = response.data.histories;
         const formattedData = data.map(item => ({
             ...item,
-            createdAt_date: moment(item.created_at).format('DD/MM/YYYY'),
-            createdAt_time: moment(item.created_at).format('HH:mm:ss'),
-            updatedAt_date: moment(item.updated_at).format('DD/MM/YYYY'),
-            updatedAt_time: moment(item.updated_at).format('HH:mm:ss'),
+            createdAt_date: moment(item.created_at).tz('Asia/Bangkok').format('DD/MM/YYYY'),
+            createdAt_time: moment(item.created_at).tz('Asia/Bangkok').format('HH:mm:ss'),
+            updatedAt_date: moment(item.updated_at).tz('Asia/Bangkok').format('DD/MM/YYYY'),
+            updatedAt_time: moment(item.updated_at).tz('Asia/Bangkok').format('HH:mm:ss'),
         }));
         setHistoryData(formattedData);
     }, [postRequest, serial]);
@@ -51,9 +45,6 @@ const History = ({ route }) => {
                 )}
                 keyExtractor={item => item.id}
             />
-            {/* <View style={styles.buttonContainer}>
-                <CustomButton text={'Share Devices'} onPress={invitationPressed} />
-            </View> */}
         </View>
     )
 }
@@ -88,4 +79,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default History
+export default History;
