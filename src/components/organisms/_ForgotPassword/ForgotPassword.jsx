@@ -1,11 +1,16 @@
 import React, { useState } from 'react'
 import CustomButton from '../../../buttonInputs/CustomButton';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-const ForgotPassword = () => {
+const ForgotPassword = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const forgotPasswordHandler = () => {
+        
+    };
 
     return (
         <View style={styles.container}>
@@ -37,13 +42,19 @@ const ForgotPassword = () => {
                     autoCapitalize="none"
                 />
 
-                {/* {loading ? (
+                {loading ? (
                     <ActivityIndicator size="large" color="#000ff" />
-                ) : ( */}
-                <Pressable onPress={''} style={styles.buttonContainer}>
-                    <Text style={styles.buttonText}>Reset Password</Text>
-                </Pressable>
-                {/* )} */}
+                ) : (
+                    <Pressable onPress={''} style={styles.buttonContainer}>
+                        <Text style={styles.buttonText}>Reset Password</Text>
+                    </Pressable>
+                )}
+
+                <CustomButton
+                    text="Click here to go back to login page"
+                    onPress={() => navigation.navigate('Login')}
+                    type="TERTIARY"
+                />
 
             </View>
         </View>

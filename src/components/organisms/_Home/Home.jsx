@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     color: 'grey',
     fontSize: 20,
     fontWeight: '400',
-  }
+  },
 });
 
 export default Home;

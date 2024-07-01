@@ -5,12 +5,17 @@ import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useAxios } from '../../../utils/hooks/useAxios';
 import { HttpStatusCode } from 'axios';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [responseUser, setResponseUser] = useState();
 
   const navigation = useNavigation();
   const { postRequest } = useAxios();
@@ -28,11 +33,17 @@ const Login = () => {
       const response = await postRequest('login', { email: email, password: password });
 
       if (response.status === HttpStatusCode.Ok) {
-        const responseUser = response.data.data;
-        await addToExisting('user', { email: responseUser.email, username: responseUser.name });
+        setShowAlert(true);
+        setAlertTitle('Success');
+        setAlertMessage('Login Successfully, click button below to continue');
+        setResponseUser(response.data.data);
+      } else {
+        throw errors;
       }
     } catch (error) {
-      Alert.alert('Login failed', error.message);
+      setShowAlert(true);
+      setAlertTitle('Error');
+      setAlertMessage('Login Failed');
     } finally {
       setLoading(false);
     }
@@ -58,12 +69,25 @@ const Login = () => {
 
     setErrors(newErrors);
 
-    // Return true if there are no errors
     return Object.keys(newErrors).length === 0;
   };
 
   return (
     <View style={styles.container}>
+      <AwesomeAlert
+        show={showAlert}
+        title={alertTitle}
+        titleStyle={{ color: alertTitle === 'Success' ? 'green' : 'red', fontSize: 30, fontWeight: 'bold' }}
+        message={alertMessage}
+        showConfirmButton={true}
+        confirmButtonColor={alertTitle === 'Success' ? 'green' : 'red'}
+        confirmText='Go to home'
+        onConfirmPressed={async () => {
+          setShowAlert(false);
+          await addToExisting('user', { email: responseUser.email, username: responseUser.name });
+        }}
+        closeOnTouchOutside={false}
+      />
       <View style={styles.root}>
         <Text style={styles.headSignIn}>Login</Text>
 
@@ -78,7 +102,6 @@ const Login = () => {
           />
           {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
         </View>
-
 
         <View style={{ width: "100%" }}>
 

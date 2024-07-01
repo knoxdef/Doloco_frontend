@@ -6,6 +6,7 @@ import { useBiometric } from '../../../utils/hooks/useBiometric';
 import { useAxios } from '../../../utils/hooks/useAxios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useFocusEffect } from '@react-navigation/native';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const IotProfile = ({ navigation, route }) => {
   const [value, setValue] = useState('');
@@ -14,28 +15,24 @@ const IotProfile = ({ navigation, route }) => {
   const [user, setUser] = useState();
   const { name, serial } = route?.params;
 
-  const { removeFromExistingData, getData } = useAsyncStorage();
+  const { getData } = useAsyncStorage();
   const { checkBiometrics, simplyPrompt } = useBiometric();
   const { postRequest } = useAxios();
 
   const handleDelete = () => {
-    removeFromExistingData('iot_list', serial);
     navigation.navigate('Home', { refresh: true });
   };
 
   const fetchUserRole = useCallback(async () => {
-    const user = await getData('user');
-    setUser(user);
-    const response = await postRequest('access_list/role', { email: user.email, serial: serial });
+    const userData = await getData('user');
+    setUser(userData)
+    const response = await postRequest('access_list/role', { email: userData.email, serial: serial });
     setTemp(response.data.Access);
   }, [getData, postRequest, serial]);
 
   useFocusEffect(
     useCallback(() => {
       fetchUserRole();
-      return () => {
-        fetchUserRole();
-      };
     }, [])
   );
 
@@ -55,7 +52,10 @@ const IotProfile = ({ navigation, route }) => {
       } else if (value === 'Pin') {
         setPinValue('');
         Keyboard.dismiss();
-        await postRequest('fingerprint/access', { email: 'asd@asd.com', serial: serial, pin: pinValue });
+        const response = await postRequest('fingerprint/access', { email: user.email, serial: serial, pin: pinValue });
+        if (response.status === 200) {
+          
+        }
       } else {
         Alert.alert('Warning', 'Select Your Access Type...');
       }
