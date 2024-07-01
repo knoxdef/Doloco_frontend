@@ -29,10 +29,10 @@ const History = ({ route }) => {
         const data = response.data.histories;
         const formattedData = data.map(item => ({
             ...item,
-            createdAt_date: moment(item.created_at).format('DD/MM/Y'),
-            createdAt_time: moment(item.created_at).format('H:m:ss'),
-            updatedAt_date: moment(item.updated_at).format('DD/MM/Y'),
-            updatedAt_time: moment(item.updated_at).format('H:m:ss'),
+            createdAt_date: moment(item.created_at).format('DD/MM/YYYY'),
+            createdAt_time: moment(item.created_at).format('HH:mm:ss'),
+            updatedAt_date: moment(item.updated_at).format('DD/MM/YYYY'),
+            updatedAt_time: moment(item.updated_at).format('HH:mm:ss'),
         }));
         setHistoryData(formattedData);
     }, [postRequest, serial]);
