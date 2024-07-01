@@ -51,6 +51,10 @@ const AccessData = ({ route, navigation }) => {
   useEffect(() => {
     fetchUser();
     fetchAccessList();
+    return () => {
+      fetchUser();
+      fetchAccessList();
+    }
   }, []);
 
   return (

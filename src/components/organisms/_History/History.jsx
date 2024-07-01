@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useAxios } from '../../../utils/hooks/useAxios';
 import moment from 'moment-timezone';
 
-const Item = ({ id, name, date, time }) => (
+const Item = ({ name, date, time }) => (
     <View style={styles.item}>
         <View>
             <Text style={styles.title}>{name}</Text>
@@ -33,18 +33,28 @@ const History = ({ route }) => {
 
     useEffect(() => {
         fetchHistory();
+        return () => { fetchHistory(); };
     }, []);
 
     return (
         <View style={styles.container}>
             <Text style={styles.header}>History</Text>
-            <FlatList
-                data={historyData}
-                renderItem={({ item }) => (
-                    <Item id={item.id} name={item.user.name} date={item.createdAt_date} time={item.createdAt_time} />
-                )}
-                keyExtractor={item => item.id}
-            />
+            {historyData && historyData.length > 0 ?
+                <FlatList
+                    data={historyData}
+                    renderItem={({ item }) => (
+                        <Item name={item.user.name} date={item.createdAt_date} time={item.createdAt_time} />
+                    )}
+                    keyExtractor={item => item.id}
+                />
+                :
+                (
+                    <View style={styles.noListView}>
+                        <Text style={styles.noListText}>This Device History Empty</Text>
+                        <Text style={styles.noListText}>It seems no usage has been made yet</Text>
+                    </View>
+                )
+            }
         </View>
     )
 }
@@ -76,6 +86,16 @@ const styles = StyleSheet.create({
     buttonContainer: {
         marginHorizontal: 20,
         marginVertical: 10,
+    },
+    noListView: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    noListText: {
+        color: 'grey',
+        fontSize: 20,
+        fontWeight: '400',
     },
 });
 

@@ -5,12 +5,17 @@ import CustomInput from '../../../buttonInputs/CustomInput/CustomInput';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useAxios } from '../../../utils/hooks/useAxios';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import { useNavigation } from '@react-navigation/native';
 
 const Invitation = ({ route }) => {
   const [receiverEmail, setReceiverEmail] = useState('');
   const [senderEmail, setSenderEmail] = useState('');
   const [note, setNote] = useState('');
   const [showAlert, setShowAlert] = useState(false);
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+
+  const navigation = useNavigation();
 
   const { serial } = route?.params;
 
@@ -18,13 +23,26 @@ const Invitation = ({ route }) => {
   const { postRequest } = useAxios();
 
   const sendInvitation = async () => {
-    const response = await postRequest('inbox/invitation/send', { senderEmail: senderEmail, receiverEmail: receiverEmail, serial: serial, note: note });
-    if (response.error) {
-      Alert.alert('Error', response.error);
-    } else {
-      setReceiverEmail('');
-      setNote('');
-      setShowAlert(true);
+    try {
+      const response = await postRequest('inbox/invitation/send', { senderEmail: senderEmail, receiverEmail: receiverEmail, serial: serial, note: note });
+      if (response.status === 201) {
+        setReceiverEmail('');
+        setNote('');
+        setShowAlert(true);
+        setAlertTitle('Success');
+        setAlertMessage('Invitation sent to user');
+      }
+    } catch (error) {
+      if (error.response.status === 409) {
+        setShowAlert(true);
+        setAlertTitle('Warning');
+        setAlertMessage('Such User already invited');
+
+      } else {
+        setShowAlert(true);
+        setAlertTitle('Error');
+        setAlertMessage('User does not exist');
+      }
     }
   };
 
@@ -33,7 +51,6 @@ const Invitation = ({ route }) => {
     if (data) {
       setSenderEmail(data.email);
     }
-
   }, [getData]);
 
   useEffect(() => {
@@ -44,13 +61,27 @@ const Invitation = ({ route }) => {
     <SafeAreaView style={styles.container}>
       <AwesomeAlert
         show={showAlert}
-        title='Success'
-        titleStyle={{ color: 'green', fontSize: 30, fontWeight: 'bold' }}
-        message='Invitation sent succesfully'
-        onConfirmPressed={() => { setShowAlert(false); }}
-        showConfirmButton={true}
-        confirmButtonColor='green'
-        confirmText='Ok'
+        title={alertTitle}
+        titleStyle={{
+          color: alertTitle === 'Success' ? 'green' : alertTitle === 'Error' ? 'red' : 'orange',
+          fontSize: 30,
+          fontWeight: 'bold'
+        }}
+        message={alertMessage}
+        showConfirmButton={alertTitle === 'Success'}
+        showCancelButton={alertTitle === 'Warning' || alertTitle === 'Error'}
+        confirmButtonColor={'green'}
+        cancelButtonColor={alertTitle === 'Error' ? 'red' : 'orange'}
+        confirmText={'Back to previous page'}
+        cancelText={'Close'}
+        onConfirmPressed={async () => {
+          setShowAlert(false);
+          navigation.goBack();
+        }}
+        onCancelPressed={() => {
+          setShowAlert(false);
+        }}
+        closeOnTouchOutside={false}
       />
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Email</Text>

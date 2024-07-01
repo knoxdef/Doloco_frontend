@@ -19,12 +19,12 @@ const IotProfile = ({ navigation, route }) => {
   const { postRequest } = useAxios();
 
   const handleDelete = () => {
-    navigation.navigate('Home', { refresh: true });
+    // navigation.navigate('Home', { refresh: true });
   };
 
   const fetchUserRole = useCallback(async () => {
     const userData = await getData('user');
-    setUser(userData)
+    setUser(userData);
     const response = await postRequest('access_list/role', { email: userData.email, serial: serial });
     setTemp(response.data.Access);
   }, [getData, postRequest, serial]);
@@ -40,7 +40,6 @@ const IotProfile = ({ navigation, route }) => {
       if (value === 'Fingerprint') {
         if (await checkBiometrics()) {
           if (await simplyPrompt()) {
-            console.log(serial);
             await postRequest('fingerprint/access', { email: user.email, serial: serial });
           } else {
             console.log('Biometric prompt cancelled');
@@ -50,10 +49,10 @@ const IotProfile = ({ navigation, route }) => {
         }
       } else if (value === 'Pin') {
         setPinValue('');
-        Keyboard.dismiss();
         const response = await postRequest('fingerprint/access', { email: user.email, serial: serial, pin: pinValue });
+        Keyboard.dismiss();
         if (response.status === 200) {
-
+          Alert.alert("Success");
         }
       } else {
         Alert.alert('Warning', 'Select Your Access Type...');
@@ -109,9 +108,10 @@ const IotProfile = ({ navigation, route }) => {
         </View>
       </View>
       <View style={styles.iotFooterContainer}>
+
         <TouchableOpacity
           onPress={() => navigation.navigate('History', { serial: serial })}
-          style={{ alignItems: 'center' }}
+          style={styles.iconWrapper}
         >
           <Icon name="restore" size={30} color="black" />
           <Text >History</Text>
@@ -120,7 +120,7 @@ const IotProfile = ({ navigation, route }) => {
         {temp && temp.role !== 'user' &&
           <TouchableOpacity
             onPress={() => navigation.navigate('AccessData', { serial: serial })}
-            style={{ alignItems: 'center' }}
+            style={styles.iconWrapper}
           >
             <Icon name="key" size={30} color="black" />
             <Text >Access</Text>
@@ -129,7 +129,7 @@ const IotProfile = ({ navigation, route }) => {
 
         <TouchableOpacity
           onPress={handleDelete}
-          style={{ alignItems: 'center' }}
+          style={styles.iconWrapper}
         >
           <Icon name="delete" size={30} color="black" />
           <Text>Delete</Text>
@@ -162,11 +162,17 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   iotFooterContainer: {
-    padding: 8,
+    gap: 10,
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'space-evenly',
     backgroundColor: 'rgba(52, 52, 52, 0.5)',
+  },
+  iconWrapper: {
+    width: '30%',
+    alignItems: 'center',
+    marginVertical: 10,
   },
   acButton: {
     fontSize: 20,

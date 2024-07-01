@@ -41,7 +41,7 @@ const Login = ({ navigation }) => {
     } catch (error) {
       setShowAlert(true);
       setAlertTitle('Error');
-      setAlertMessage('Login Failed, please check again your email and password. click button below to close pop up');
+      setAlertMessage('Login Failed, please check again your email and password. Click button below to close pop up');
     } finally {
       setLoading(false);
     }

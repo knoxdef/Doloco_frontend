@@ -22,7 +22,7 @@ const useAxios = () => {
             const response = await axiosInstance.post(endpoint, content);
             return response;
         } catch (error) {
-            console.log(error);
+            throw error;
         }
     };
 
