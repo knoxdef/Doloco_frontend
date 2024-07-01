@@ -6,7 +6,6 @@ import { useBiometric } from '../../../utils/hooks/useBiometric';
 import { useAxios } from '../../../utils/hooks/useAxios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useFocusEffect } from '@react-navigation/native';
-import AwesomeAlert from 'react-native-awesome-alerts';
 
 const IotProfile = ({ navigation, route }) => {
   const [value, setValue] = useState('');
@@ -54,7 +53,7 @@ const IotProfile = ({ navigation, route }) => {
         Keyboard.dismiss();
         const response = await postRequest('fingerprint/access', { email: user.email, serial: serial, pin: pinValue });
         if (response.status === 200) {
-          
+
         }
       } else {
         Alert.alert('Warning', 'Select Your Access Type...');
@@ -111,7 +110,7 @@ const IotProfile = ({ navigation, route }) => {
       </View>
       <View style={styles.iotFooterContainer}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('History')}
+          onPress={() => navigation.navigate('History', { serial: serial })}
           style={{ alignItems: 'center' }}
         >
           <Icon name="restore" size={30} color="black" />

@@ -33,7 +33,6 @@ const Register = () => {
 
     setErrors(newErrors);
 
-    // Return true if there are no errors
     return Object.keys(newErrors).length === 0;
   };
 
@@ -95,7 +94,7 @@ const Register = () => {
         <View style={{ width: "100%" }}>
           <TextInput
             style={styles.inputCointainer}
-            placeholder="Password"
+            placeholder={'Password'}
             placeholderTextColor={'grey'}
             value={password}
             onChangeText={(text) => setPassword(text)}

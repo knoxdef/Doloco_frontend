@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useAxios } from '../../../utils/hooks/useAxios';
+import moment from 'moment';
 
 const Item = ({ id, name, date, time }) => (
     <View style={styles.item}>
@@ -7,9 +9,6 @@ const Item = ({ id, name, date, time }) => (
             <Text style={styles.title}>{name}</Text>
             <Text style={styles.title}>{date} - {time}</Text>
         </View>
-        {/* <TouchableOpacity onPress={''}>
-            <Icon name="delete" size={24} color="black" />
-        </TouchableOpacity> */}
     </View>
 );
 
@@ -19,14 +18,36 @@ const dummy = [
     { id: 3, name: 'Asd', date: '27/06/2024', time: '17:23:22' },
 ];
 
-const History = () => {
+const History = ({ route }) => {
+    const [historyData, setHistoryData] = useState([]);
+
+    const { serial } = route?.params;
+    const { postRequest } = useAxios();
+
+    const fetchHistory = useCallback(async () => {
+        const response = await postRequest('history/get', { serial: serial });
+        const data = response.data.histories;
+        const formattedData = data.map(item => ({
+            ...item,
+            createdAt_date: moment(item.created_at).format('DD/MM/Y'),
+            createdAt_time: moment(item.created_at).format('H:m:ss'),
+            updatedAt_date: moment(item.updated_at).format('DD/MM/Y'),
+            updatedAt_time: moment(item.updated_at).format('H:m:ss'),
+        }));
+        setHistoryData(formattedData);
+    }, [postRequest, serial]);
+
+    useEffect(() => {
+        fetchHistory();
+    }, []);
+
     return (
         <View style={styles.container}>
             <Text style={styles.header}>History</Text>
             <FlatList
-                data={dummy}
+                data={historyData}
                 renderItem={({ item }) => (
-                    <Item id={item.id} name={item.name} date={item.date} time={item.time} />
+                    <Item id={item.id} name={item.user.name} date={item.createdAt_date} time={item.createdAt_time} />
                 )}
                 keyExtractor={item => item.id}
             />
