@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, Alert, TextInput, Keyboard } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, TextInput, Keyboard } from 'react-native';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useBiometric } from '../../../utils/hooks/useBiometric';
@@ -44,7 +44,12 @@ const IotProfile = ({ navigation, route }) => {
       if (value === 'Fingerprint') {
         if (await checkBiometrics()) {
           if (await simplyPrompt()) {
-            await postRequest('fingerprint/access', { email: user.email, serial: serial });
+            const response = await postRequest('fingerprint/access', { email: user.email, serial: serial });
+            if (response.status === 200) {
+              setShowAlert(true);
+              setAlertTitle('Success');
+              setAlertMessage('Access request granted');
+            }
           } else {
             console.log('Biometric prompt cancelled');
           }

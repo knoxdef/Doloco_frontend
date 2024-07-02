@@ -10,7 +10,7 @@ const WifiInput = ({ route, navigation }) => {
     const [showAlert, setShowAlert] = useState(false);
     const { deviceName, deviceId, configured } = route?.params;
     const { sendMessage, disconnectBle } = useManager();
-    const { addToExisting, getData } = useAsyncStorage();
+    const { getData } = useAsyncStorage();
     const { postRequest } = useAxios();
     const [deviceDetail, setDeviceDetail] = useState({ deviceName: '', wifiName: '', wifiPassword: '' });
     const style = StyleSheet.create({

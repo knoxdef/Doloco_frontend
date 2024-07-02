@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useAxios } from '../../../utils/hooks/useAxios';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { HttpStatusCode } from 'axios';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const Item = ({ id, sender, note, iotTool, inboxOwner, onAccept, onReject }) => {
     return (
@@ -35,12 +36,11 @@ const Item = ({ id, sender, note, iotTool, inboxOwner, onAccept, onReject }) => 
 const Inbox = () => {
     const [invitations, setInvitations] = useState([]);
     const [owner, setOwner] = useState(null);
-
-    console.log("invitations:", invitations);
-    console.log("owner:", owner);
-
     const { postRequest } = useAxios();
     const { getData } = useAsyncStorage();
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertTitle, setAlertTitle] = useState('');
+    const [alertMessage, setAlertMessage] = useState('');
 
     const eraseFromList = (id) => {
         const newData = invitations.filter(item => item.id !== id);
@@ -54,12 +54,16 @@ const Inbox = () => {
                 { invitationId: id, senderId: sender.id, receiverId: receiver.id, iotToolId: iotTool.id }
             );
 
-            if (response.status !== HttpStatusCode.BadRequest) {
-                Alert.alert('Success', 'Invitation accepted');
+            if (response.status === 200) {
+                setShowAlert(true);
+                setAlertTitle('Success');
+                setAlertMessage('Invitation accepted.');
                 eraseFromList(id);
             }
         } catch (error) {
-            console.log('Error:', error);
+            setShowAlert(true);
+            setAlertTitle('Error');
+            setAlertMessage('Something when wrong.');
         }
     };
 
@@ -72,10 +76,14 @@ const Inbox = () => {
 
             if (response.status !== HttpStatusCode.BadRequest) {
                 eraseFromList(id);
-                Alert.alert('Success', 'Invitation rejected');
+                setShowAlert(true);
+                setAlertTitle('Success');
+                setAlertMessage('Invitation rejected.');
             }
         } catch (error) {
-            console.log('Error:', error);
+            setShowAlert(true);
+            setAlertTitle('Error');
+            setAlertMessage('Something when wrong.');
         }
     };
 
@@ -101,6 +109,31 @@ const Inbox = () => {
 
     return (
         <View style={styles.container}>
+
+            <AwesomeAlert
+                show={showAlert}
+                title={alertTitle}
+                titleStyle={{
+                    color: alertTitle === 'Success' ? 'green' : alertTitle === 'Error' ? 'red' : 'orange',
+                    fontSize: 30,
+                    fontWeight: 'bold',
+                }}
+                message={alertMessage}
+                showConfirmButton={alertTitle === 'Success'}
+                showCancelButton={alertTitle === 'Warning' || alertTitle === 'Error'}
+                confirmButtonColor={'green'}
+                cancelButtonColor={alertTitle === 'Error' ? 'red' : 'orange'}
+                confirmText={'Close'}
+                cancelText={'Close'}
+                onConfirmPressed={async () => {
+                    setShowAlert(false);
+                }}
+                onCancelPressed={() => {
+                    setShowAlert(false);
+                }}
+                closeOnTouchOutside={false}
+            />
+
             <Text style={styles.header}>Inbox</Text>
 
             {invitations && owner && invitations.length > 0 ? (
