@@ -5,6 +5,7 @@ import { useAxios } from '../../../utils/hooks/useAxios';
 import { HttpStatusCode } from 'axios';
 import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useNavigation } from '@react-navigation/native';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -12,6 +13,10 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [loading, setloading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [responseUser, setResponseUser] = useState();
 
   const { postRequest } = useAxios();
   const { addToExisting } = useAsyncStorage();
@@ -48,11 +53,19 @@ const Register = () => {
       const response = await postRequest('register', { name: username, email: email, password: password });
 
       if (response.status === HttpStatusCode.Created) {
-        const responseUser = response.data.user;
-        await addToExisting('user', { email: responseUser.email, username: responseUser.name });
+        const userData = response.data.user;
+
+        if (response.status === 201) {
+          setShowAlert(true);
+          setAlertTitle('Success');
+          setAlertMessage('Registration Success');
+          setResponseUser(userData);
+        }
       }
     } catch (error) {
-      Alert.alert('Registration failed', error.message);
+      setShowAlert(true);
+      setAlertTitle('Error');
+      setAlertMessage('Registration failed, something went wrong');
     } finally {
       setloading(false);
     }
@@ -64,6 +77,32 @@ const Register = () => {
 
   return (
     <View style={styles.container}>
+
+      <AwesomeAlert
+        show={showAlert}
+        title={alertTitle}
+        titleStyle={{
+          color: alertTitle === 'Success' ? 'green' : alertTitle === 'Error' ? 'red' : 'orange',
+          fontSize: 30,
+          fontWeight: 'bold',
+        }}
+        message={alertMessage}
+        showConfirmButton={alertTitle === 'Success'}
+        showCancelButton={alertTitle === 'Warning' || alertTitle === 'Error'}
+        confirmButtonColor={'green'}
+        cancelButtonColor={alertTitle === 'Error' ? 'red' : 'orange'}
+        confirmText={'Go to home page'}
+        cancelText={'Close'}
+        onConfirmPressed={async () => {
+          setShowAlert(false);
+          await addToExisting('user', { email: responseUser.email, username: responseUser.name });
+        }}
+        onCancelPressed={() => {
+          setShowAlert(false);
+        }}
+        closeOnTouchOutside={false}
+      />
+
       <View style={styles.root}>
         <Text style={styles.headSignIn}>Register</Text>
 

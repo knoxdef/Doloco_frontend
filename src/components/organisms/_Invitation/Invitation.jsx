@@ -65,7 +65,7 @@ const Invitation = ({ route }) => {
         titleStyle={{
           color: alertTitle === 'Success' ? 'green' : alertTitle === 'Error' ? 'red' : 'orange',
           fontSize: 30,
-          fontWeight: 'bold'
+          fontWeight: 'bold',
         }}
         message={alertMessage}
         showConfirmButton={alertTitle === 'Success'}

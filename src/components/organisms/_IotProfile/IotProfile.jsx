@@ -6,6 +6,7 @@ import { useBiometric } from '../../../utils/hooks/useBiometric';
 import { useAxios } from '../../../utils/hooks/useAxios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useFocusEffect } from '@react-navigation/native';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const IotProfile = ({ navigation, route }) => {
   const [value, setValue] = useState('');
@@ -13,6 +14,9 @@ const IotProfile = ({ navigation, route }) => {
   const [temp, setTemp] = useState();
   const [user, setUser] = useState();
   const { name, serial } = route?.params;
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
 
   const { getData } = useAsyncStorage();
   const { checkBiometrics, simplyPrompt } = useBiometric();
@@ -48,17 +52,23 @@ const IotProfile = ({ navigation, route }) => {
           console.log('Biometric not available');
         }
       } else if (value === 'Pin') {
+        Keyboard.dismiss();
         setPinValue('');
         const response = await postRequest('fingerprint/access', { email: user.email, serial: serial, pin: pinValue });
-        Keyboard.dismiss();
         if (response.status === 200) {
-          Alert.alert("Success");
+          setShowAlert(true);
+          setAlertTitle('Success');
+          setAlertMessage('Access request granted');
         }
       } else {
-        Alert.alert('Warning', 'Select Your Access Type...');
+        setShowAlert(true);
+        setAlertTitle('Warning');
+        setAlertMessage('Please select your access type');
       }
     } catch (error) {
-      console.error('Error during access handling:', error);
+      setShowAlert(true);
+      setAlertTitle('Error');
+      setAlertMessage('Access request denied');
     }
   };
 
@@ -69,6 +79,31 @@ const IotProfile = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+
+      <AwesomeAlert
+        show={showAlert}
+        title={alertTitle}
+        titleStyle={{
+          color: alertTitle === 'Success' ? 'green' : alertTitle === 'Error' ? 'red' : 'orange',
+          fontSize: 30,
+          fontWeight: 'bold',
+        }}
+        message={alertMessage}
+        showConfirmButton={alertTitle === 'Success'}
+        showCancelButton={alertTitle === 'Warning' || alertTitle === 'Error'}
+        confirmButtonColor={'green'}
+        cancelButtonColor={alertTitle === 'Error' ? 'red' : 'orange'}
+        confirmText={'Close'}
+        cancelText={'Close'}
+        onConfirmPressed={async () => {
+          setShowAlert(false);
+        }}
+        onCancelPressed={() => {
+          setShowAlert(false);
+        }}
+        closeOnTouchOutside={false}
+      />
+
       <View style={styles.root}>
         <Text style={styles.toolName}>{name}</Text>
         <View style={styles.switchContainer}>

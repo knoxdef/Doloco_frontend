@@ -5,41 +5,46 @@ import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { HttpStatusCode } from 'axios';
 
-const Item = ({ id, note, sender, receiver, iotTool, onAccept, onReject }) => (
-    <View style={styles.item}>
-        <View style={{ flex: 6.5 }}>
-            <Text style={styles.title}>From: {sender.name} </Text>
-            <Text style={styles.title}>Note:</Text>
-            <Text style={styles.title}>{note}</Text>
-        </View>
-        <View style={{ display: 'flex', flexDirection: 'row', gap: 30, flex: 3.5 }}>
-            <TouchableOpacity
-                style={{ backgroundColor: 'lime', padding: 5 }}
-                onPress={() => onAccept(id, sender, receiver, iotTool)}
-            >
-                <Icon name="check" size={30} color="black" />
-            </TouchableOpacity>
+const Item = ({ id, sender, note, iotTool, inboxOwner, onAccept, onReject }) => {
+    return (
+        <View style={styles.item}>
+            <View style={{ flex: 6.5 }}>
+                <Text style={styles.title}>From: {sender.name} </Text>
+                <Text style={styles.title}>Note:</Text>
+                <Text style={styles.title}>{note}</Text>
+            </View>
+            <View style={{ display: 'flex', flexDirection: 'row', gap: 30, flex: 3.5 }}>
+                <TouchableOpacity
+                    style={{ backgroundColor: 'lime', padding: 5 }}
+                    onPress={() => onAccept(id, sender, inboxOwner, iotTool)}
+                >
+                    <Icon name="check" size={30} color="black" />
+                </TouchableOpacity>
 
-            <TouchableOpacity
-                style={{ backgroundColor: 'red', padding: 5 }}
-                onPress={() => onReject(id, sender, receiver, iotTool)}
-            >
-                <Icon name="clear" size={30} color="black" />
-            </TouchableOpacity>
+                <TouchableOpacity
+                    style={{ backgroundColor: 'red', padding: 5 }}
+                    onPress={() => onReject(id, sender, inboxOwner, iotTool)}
+                >
+                    <Icon name="clear" size={30} color="black" />
+                </TouchableOpacity>
+            </View>
         </View>
-    </View>
-);
-
+    );
+};
 
 const Inbox = () => {
-    const [inbox, setInbox] = useState([]);
+    const [invitations, setInvitations] = useState([]);
+    const [owner, setOwner] = useState(null);
+
+    console.log("invitations:", invitations);
+    console.log("owner:", owner);
 
     const { postRequest } = useAxios();
-    const { getData, addToExisting } = useAsyncStorage();
+    const { getData } = useAsyncStorage();
 
     const eraseFromList = (id) => {
-        const newData = inbox.filter(item => item.id !== id);
-        setInbox(newData);
+        const newData = invitations.filter(item => item.id !== id);
+        setInvitations(newData);
     };
 
     const handleAccept = async (id, sender, receiver, iotTool) => {
@@ -50,7 +55,6 @@ const Inbox = () => {
             );
 
             if (response.status !== HttpStatusCode.BadRequest) {
-                await addToExisting('iot_list', { name: iotTool.serial, serial: iotTool.serial, list_for: receiver.email });
                 Alert.alert('Success', 'Invitation accepted');
                 eraseFromList(id);
             }
@@ -75,33 +79,40 @@ const Inbox = () => {
         }
     };
 
-    const fetchInbox = useCallback(async () => {
+    const fetchData = useCallback(async () => {
         const user = await getData('user');
         const response = await postRequest('inbox/get', { email: user.email });
 
         if (response.data) {
-            setInbox(response.data.messages);
+            const inbox = response.data.inbox;
+            if (inbox.invitations === null) {
+                setInvitations([]);
+            } else {
+                setInvitations(inbox.invitations);
+            }
+            setOwner(inbox.owner);
         }
     }, [postRequest, getData]);
 
     useEffect(() => {
-        fetchInbox();
+        fetchData();
+        return () => { fetchData(); };
     }, []);
 
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Inbox</Text>
 
-            {inbox.length > 0 ? (
+            {invitations && owner && invitations.length > 0 ? (
                 <FlatList
-                    data={inbox}
+                    data={invitations}
                     renderItem={({ item }) => (
                         <Item
                             id={item.id}
-                            note={item.note}
                             sender={item.sender}
-                            receiver={item.receiver}
+                            note={item.note}
                             iotTool={item.iot_tool}
+                            inboxOwner={owner}
                             onAccept={handleAccept}
                             onReject={handleReject}
                         />
@@ -114,7 +125,8 @@ const Inbox = () => {
                     <View style={styles.emptyContainer}>
                         <Text style={styles.emptyText}>Your inbox is empty</Text>
                     </View>
-                )}
+                )
+            }
         </View>
     );
 };

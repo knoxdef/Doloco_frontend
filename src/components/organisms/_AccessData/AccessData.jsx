@@ -54,7 +54,7 @@ const AccessData = ({ route, navigation }) => {
     return () => {
       fetchUser();
       fetchAccessList();
-    }
+    };
   }, []);
 
   return (

@@ -33,15 +33,13 @@ const Login = ({ navigation }) => {
       if (response.status === HttpStatusCode.Ok) {
         setShowAlert(true);
         setAlertTitle('Success');
-        setAlertMessage('Login Successfully, click button below to continue to home page');
+        setAlertMessage('Login Success, click button below to continue to home page');
         setResponseUser(response.data.data);
-      } else {
-        throw errors;
       }
     } catch (error) {
       setShowAlert(true);
       setAlertTitle('Error');
-      setAlertMessage('Login Failed, please check again your email and password. Click button below to close pop up');
+      setAlertMessage('Login Failed, please check again your email and password.');
     } finally {
       setLoading(false);
     }
@@ -81,7 +79,7 @@ const Login = ({ navigation }) => {
         showCancelButton={alertTitle !== 'Success'}
         confirmButtonColor={'green'}
         cancelButtonColor={'red'}
-        confirmText={'Go to home'}
+        confirmText={'Go to home page'}
         cancelText={'Close'}
         onConfirmPressed={async () => {
           setShowAlert(false);
