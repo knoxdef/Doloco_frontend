@@ -1,1 +1,3 @@
-export { default } from './IotProfile';
+import IotProfile from "./IotProfile";
+
+export { IotProfile };

@@ -1,12 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Home } from '../../organisms/_Home';
-import { Scanner, WifiInput } from '../../organisms';
-import IotProfile from '../../organisms/_IotProfile/IotProfile';
-import AccessData from '../../organisms/_AccessData/AccessData';
-import Invitation from '../../organisms/_Invitation/Invitation';
-import { Inbox } from '../../organisms/_Inbox';
-import { History } from '../../organisms/_History';
+import { AccessData, History, Home, Inbox, Invitation, IotProfile, Scanner, WifiInput } from '../../organisms';
 
 const HomeStackNavigation = () => {
   const Stack = createNativeStackNavigator();

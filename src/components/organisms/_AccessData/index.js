@@ -1,1 +1,3 @@
-export {default} from './AccessData'
+import AccessData from "./AccessData";
+
+export { AccessData };
