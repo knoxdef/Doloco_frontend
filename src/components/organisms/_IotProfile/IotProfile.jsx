@@ -7,6 +7,7 @@ import { useAxios } from '../../../utils/hooks/useAxios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useFocusEffect } from '@react-navigation/native';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import useManager from '../../../utils/hooks/useManager';
 
 const IotProfile = ({ navigation, route }) => {
   const [value, setValue] = useState('');
@@ -21,6 +22,7 @@ const IotProfile = ({ navigation, route }) => {
   const { getData } = useAsyncStorage();
   const { checkBiometrics, simplyPrompt } = useBiometric();
   const { postRequest } = useAxios();
+  const { findSpecificDeviceAndConnect } = useManager();
 
   const handleDelete = () => {
     // navigation.navigate('Home', { refresh: true });
@@ -167,6 +169,21 @@ const IotProfile = ({ navigation, route }) => {
           </TouchableOpacity>
         }
 
+        {temp && temp.role !== 'user' &&
+          <TouchableOpacity
+            onPress={async () => {
+              const response = await findSpecificDeviceAndConnect(serial);
+              if (response) {
+                navigation.navigate('WifiInput', { deviceName: response.name, deviceId: response.id, configured: false });
+              }
+            }}
+            style={styles.iconWrapper}
+          >
+            <Icon name="wifi" size={30} color="black" />
+            <Text >Set Wifi</Text>
+          </TouchableOpacity>
+        }
+
         <TouchableOpacity
           onPress={handleDelete}
           style={styles.iconWrapper}
@@ -174,6 +191,7 @@ const IotProfile = ({ navigation, route }) => {
           <Icon name="delete" size={30} color="black" />
           <Text>Delete</Text>
         </TouchableOpacity>
+
       </View>
     </SafeAreaView >
   );

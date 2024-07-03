@@ -13,7 +13,7 @@ const useManager = () => {
   const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
   const [allDevices, setAllDevices] = useState<Device[]>([]);
   const SERVICE_UUID = '6E400001-B5A3-F393-E0A9-E50E24DCCA9E';
-  const CHARACTERISTIC_UUID = '6E400002-B5A3-F393-E0A9-E50E24DCCA9E';
+  const WIFI_CHARACTERISTIC_UUID = '6E400002-B5A3-F393-E0A9-E50E24DCCA9E';
 
   const requestBluetoothPermissions = async () => {
     if (Platform.OS === 'android') {
@@ -80,9 +80,7 @@ const useManager = () => {
       );
       setAllDevices([]);
 
-      BleManager.scan([], 10, true).catch(err => {
-        console.error(err);
-      });
+      BleManager.scan([], 10, true);
 
       setTimeout(() => {
         stopScanning();
@@ -114,7 +112,7 @@ const useManager = () => {
       await BleManager.startNotification(
         deviceId,
         SERVICE_UUID,
-        CHARACTERISTIC_UUID,
+        WIFI_CHARACTERISTIC_UUID,
       );
       console.log('Subscribed to WiFi status characteristic');
     } catch (error) {
@@ -128,7 +126,7 @@ const useManager = () => {
       const data = await BleManager.read(
         deviceId,
         SERVICE_UUID,
-        CHARACTERISTIC_UUID,
+        WIFI_CHARACTERISTIC_UUID,
       );
       const wifiStatus = data;
       return wifiStatus;
@@ -137,20 +135,10 @@ const useManager = () => {
     }
   };
 
-  const connectToDevice = async (
-    deviceId: string,
-    // ssid: string,
-    // password: string,
-  ) => {
+  const connectToDevice = async (deviceId: string) => {
     await BleManager.connect(deviceId).then(() => {
       return BleManager.retrieveServices(deviceId);
     });
-    // .then(() => {
-    //   sendMessage(deviceId, ssid, password);
-    // })
-    // .catch(error => {
-    //   console.log('Connection error', error);
-    // });
   };
 
   const sendMessage = async (
@@ -169,7 +157,7 @@ const useManager = () => {
       await BleManager.writeWithoutResponse(
         deviceId,
         SERVICE_UUID,
-        CHARACTERISTIC_UUID,
+        WIFI_CHARACTERISTIC_UUID,
         stringToBytes(data),
       );
     } catch (error) {
@@ -177,12 +165,29 @@ const useManager = () => {
     }
   };
 
-  const disconnectBle = async id => {
+  const disconnectBle = async (id: string) => {
     await BleManager.disconnect(id);
   };
 
   const stringToBytes = (str: string) => {
     return Array.from(new TextEncoder().encode(str));
+  };
+
+  const findSpecificDeviceAndConnect = async (serial: string) => {
+    await startScanning();
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    for (const device of allDevices) {
+      try {
+        if (device.name === serial) {
+          await connectToDevice(device.id);
+          return {id: device.id, name: device.name};
+        }
+      } catch (error) {
+        console.log('Error:', error);
+      }
+    }
   };
 
   return {
@@ -194,6 +199,7 @@ const useManager = () => {
     sendMessage,
     disconnectBle,
     checkBluetoothState,
+    findSpecificDeviceAndConnect,
     allDevices,
   };
 };

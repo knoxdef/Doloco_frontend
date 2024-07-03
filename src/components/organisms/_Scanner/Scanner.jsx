@@ -63,14 +63,14 @@ const Scanner = ({ navigation }) => {
             color: 'black',
             fontSize: 20,
             fontWeight: '900',
-        }
+        },
     });
 
     const onItemPressHandler = async (device) => {
         try {
             await connectToDevice(device.id);
-            await startNotification(device.id)
-            const wifiStatus = await readNotification(device.id);
+            await startNotification(device.id);
+            const wifiStatus = await readNotification(device.id, 'wifi');
             const stringValue = String.fromCharCode.apply(null, new Uint8Array(wifiStatus));
 
             if (stringValue === 'configured') {

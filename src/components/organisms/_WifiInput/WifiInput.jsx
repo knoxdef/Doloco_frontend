@@ -7,12 +7,16 @@ import { useAxios } from '../../../utils/hooks/useAxios';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
 const WifiInput = ({ route, navigation }) => {
+    const [deviceDetail, setDeviceDetail] = useState({ deviceName: '', wifiName: '', wifiPassword: '' });
     const [showAlert, setShowAlert] = useState(false);
+    const [alertTitle, setAlertTitle] = useState('');
+    const [alertMessage, setAlertMessage] = useState('');
+
     const { deviceName, deviceId, configured } = route?.params;
     const { sendMessage, disconnectBle } = useManager();
     const { getData } = useAsyncStorage();
     const { postRequest } = useAxios();
-    const [deviceDetail, setDeviceDetail] = useState({ deviceName: '', wifiName: '', wifiPassword: '' });
+
     const style = StyleSheet.create({
         screen: {
             flex: 1,
@@ -86,9 +90,14 @@ const WifiInput = ({ route, navigation }) => {
             await postRequest('storeAccess', { serial: deviceName, email: user.email });
 
             setDeviceDetail({ wifiName: '', wifiPassword: '' });
-            navigation.navigate('Home', { refresh: true });
+
+            setShowAlert(true);
+            setAlertTitle('Success');
+            setAlertMessage('Wifi setup complete, return to home while we change your smart door wifi credential.');
         } catch (error) {
-            console.log(error);
+            setShowAlert(true);
+            setAlertTitle('Error');
+            setAlertMessage('Wifi Setup Failed, something went wrong.');
         }
     };
 
@@ -96,14 +105,29 @@ const WifiInput = ({ route, navigation }) => {
         <SafeAreaView style={style.screen}>
             <AwesomeAlert
                 show={showAlert}
-                title='Success'
-                titleStyle={{ color: 'green', fontSize: 30, fontWeight: 'bold' }}
-                message='Iot Succesfully Registered'
-                onConfirmPressed={() => { setShowAlert(false); }}
-                showConfirmButton={true}
-                confirmButtonColor='green'
-                confirmText='Ok'
+                title={alertTitle}
+                titleStyle={{
+                    color: alertTitle === 'Success' ? 'green' : alertTitle === 'Error' ? 'red' : 'orange',
+                    fontSize: 30,
+                    fontWeight: 'bold',
+                }}
+                message={alertMessage}
+                showConfirmButton={alertTitle === 'Success'}
+                showCancelButton={alertTitle === 'Warning' || alertTitle === 'Error'}
+                confirmButtonColor={'green'}
+                cancelButtonColor={alertTitle === 'Error' ? 'red' : 'orange'}
+                confirmText={'Return to home'}
+                cancelText={'Close'}
+                onConfirmPressed={async () => {
+                    setShowAlert(false);
+                    navigation.navigate('Home');
+                }}
+                onCancelPressed={() => {
+                    setShowAlert(false);
+                }}
+                closeOnTouchOutside={false}
             />
+
             <ScrollView contentContainerStyle={style.scroll}>
                 <Text style={style.title}>{deviceName}</Text>
                 <View style={style.inputContainer}>
