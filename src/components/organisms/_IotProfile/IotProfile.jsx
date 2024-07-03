@@ -21,9 +21,18 @@ const IotProfile = ({ navigation, route }) => {
   const { postRequest } = useAxios();
   const { findSpecificDeviceAndConnect } = useManager();
 
-  const handleDelete = () => {
-    // navigation.navigate('Home', { refresh: true });
+  const deleteMessage = () => {    
+    setShowAlert(true);
+    setAlertTitle('Warning');
+    setAlertMessage('Are you sure want to delete this device?');
+    
   };
+
+  const handleDelete = async () => {
+    const response = await postRequest('access_list/delete-all', {serial: serial});
+
+    if(response.status === 200) navigation.navigate('Home');
+  }
 
   const fetchUserRole = useCallback(async () => {
     const userData = await getData('user');
@@ -93,15 +102,13 @@ const IotProfile = ({ navigation, route }) => {
           fontWeight: 'bold',
         }}
         message={alertMessage}
-        showConfirmButton={alertTitle === 'Success'}
-        showCancelButton={alertTitle === 'Warning' || alertTitle === 'Error'}
+        showConfirmButton={true}
+        showCancelButton={true}
         confirmButtonColor={'green'}
-        cancelButtonColor={alertTitle === 'Error' ? 'red' : 'orange'}
-        confirmText={'Close'}
-        cancelText={'Close'}
-        onConfirmPressed={async () => {
-          setShowAlert(false);
-        }}
+        cancelButtonColor={'red'}
+        confirmText={'Yes'}
+        cancelText={'No'}
+        onConfirmPressed={handleDelete}
         onCancelPressed={() => {
           setShowAlert(false);
         }}
@@ -182,7 +189,7 @@ const IotProfile = ({ navigation, route }) => {
         }
 
         <TouchableOpacity
-          onPress={handleDelete}
+          onPress={deleteMessage}
           style={styles.iconWrapper}
         >
           <Icon name="delete" size={30} color="black" />
