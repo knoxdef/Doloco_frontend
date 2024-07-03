@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Alert, Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import useManager from '../../../utils/hooks/useManager';
+import { useManager } from '../../../utils/hooks';
 
 const Scanner = ({ navigation }) => {
     const [firstScanInitiated, setFirstScanInitiated] = useState(false);

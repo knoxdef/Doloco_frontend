@@ -1,21 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, View, Text, Alert } from 'react-native';
+import { SafeAreaView, StyleSheet, View, Text } from 'react-native';
 import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
 import CustomInput from '../../../buttonInputs/CustomInput/CustomInput';
-import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
-import { useAxios } from '../../../utils/hooks/useAxios';
 import AwesomeAlert from 'react-native-awesome-alerts';
-import { useNavigation } from '@react-navigation/native';
+import { useAsyncStorage, useAxios } from '../../../utils/hooks';
 
-const Invitation = ({ route }) => {
+const Invitation = ({ navigation, route }) => {
   const [receiverEmail, setReceiverEmail] = useState('');
   const [senderEmail, setSenderEmail] = useState('');
   const [note, setNote] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
-
-  const navigation = useNavigation();
 
   const { serial } = route?.params;
 

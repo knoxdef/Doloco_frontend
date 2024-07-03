@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useAxios } from '../../../utils/hooks/useAxios';
-import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useAsyncStorage, useAxios } from '../../../utils/hooks';
 import { HttpStatusCode } from 'axios';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Item = ({ id, sender, note, iotTool, inboxOwner, onAccept, onReject }) => {
     return (

@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native';
 import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
-import { useAxios } from '../../../utils/hooks/useAxios';
 import { HttpStatusCode } from 'axios';
-import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
-import { useNavigation } from '@react-navigation/native';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import { useAsyncStorage, useAxios } from '../../../utils/hooks';
 
-const Register = () => {
+const Register = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,8 +18,6 @@ const Register = () => {
 
   const { postRequest } = useAxios();
   const { addToExisting } = useAsyncStorage();
-
-  const navigation = useNavigation();
 
   const validate = () => {
     const newErrors = {};

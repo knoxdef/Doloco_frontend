@@ -11,10 +11,9 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ListItem from '../../../utils/dummyData/ListItem';
-import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useAxios } from '../../../utils/hooks/useAxios';
+import { useAsyncStorage, useAxios } from '../../../utils/hooks';
 
 const Home = ({ navigation }) => {
   const [iotList, setIotList] = useState([]);

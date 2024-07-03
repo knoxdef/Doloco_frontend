@@ -2,8 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useAxios } from '../../../utils/hooks/useAxios';
-import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
+import { useAsyncStorage, useAxios } from '../../../utils/hooks';
 
 const Item = ({ id, name, role, email, onDelete, user }) => (
   <View style={styles.item}>

@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import useManager from '../../../utils/hooks/useManager';
-import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
-import { useAxios } from '../../../utils/hooks/useAxios';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import { useAsyncStorage, useAxios, useManager } from '../../../utils/hooks';
 
 const WifiInput = ({ route, navigation }) => {
     const [deviceDetail, setDeviceDetail] = useState({ deviceName: '', wifiName: '', wifiPassword: '' });

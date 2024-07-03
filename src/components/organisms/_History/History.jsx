@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { useAxios } from '../../../utils/hooks/useAxios';
 import moment from 'moment-timezone';
+import { useAxios } from '../../../utils/hooks';
 
 const Item = ({ name, date, time }) => (
     <View style={styles.item}>

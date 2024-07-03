@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import CustomButton from '../../../buttonInputs/CustomButton';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
-import { useAxios } from '../../../utils/hooks/useAxios';
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useAxios } from '../../../utils/hooks';
 import { HttpStatusCode } from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import CustomButton from '../../../buttonInputs/CustomButton';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
-const ForgotPassword = () => {
+const ForgotPassword = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -18,8 +17,6 @@ const ForgotPassword = () => {
     const [alertMessage, setAlertMessage] = useState('');
 
     const { postRequest } = useAxios();
-
-    const navigation = useNavigation();
 
     const validate = () => {
         const newErrors = {};
@@ -103,7 +100,7 @@ const ForgotPassword = () => {
                     autoCapitalize="none"
                 />
                 {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
-                
+
                 <TextInput
                     style={styles.inputContainer}
                     placeholder="New Password"
@@ -114,7 +111,7 @@ const ForgotPassword = () => {
                     autoCapitalize="none"
                 />
                 {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
-                
+
                 <TextInput
                     style={styles.inputContainer}
                     placeholder="Confirm Password"

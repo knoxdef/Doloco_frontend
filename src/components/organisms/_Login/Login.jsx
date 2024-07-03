@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
-import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
-import { useAxios } from '../../../utils/hooks/useAxios';
+import { useAsyncStorage, useAxios } from '../../../utils/hooks';
 import { HttpStatusCode } from 'axios';
+import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
 const Login = ({ navigation }) => {

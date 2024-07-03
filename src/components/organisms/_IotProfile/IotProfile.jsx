@@ -1,13 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, TextInput, Keyboard } from 'react-native';
-import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
+import { useAsyncStorage, useAxios, useBiometric, useManager } from '../../../utils/hooks';
 import { Dropdown } from 'react-native-element-dropdown';
-import { useBiometric } from '../../../utils/hooks/useBiometric';
-import { useAxios } from '../../../utils/hooks/useAxios';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useFocusEffect } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import AwesomeAlert from 'react-native-awesome-alerts';
-import useManager from '../../../utils/hooks/useManager';
 
 const IotProfile = ({ navigation, route }) => {
   const [value, setValue] = useState('');
@@ -165,7 +162,7 @@ const IotProfile = ({ navigation, route }) => {
             style={styles.iconWrapper}
           >
             <Icon name="key" size={30} color="black" />
-            <Text >Access</Text>
+            <Text >Manage Access</Text>
           </TouchableOpacity>
         }
 
@@ -183,6 +180,14 @@ const IotProfile = ({ navigation, route }) => {
             <Text >Set Wifi</Text>
           </TouchableOpacity>
         }
+
+        <TouchableOpacity
+          onPress={handleDelete}
+          style={styles.iconWrapper}
+        >
+          <Icon name="delete" size={30} color="black" />
+          <Text>Delete</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           onPress={handleDelete}
