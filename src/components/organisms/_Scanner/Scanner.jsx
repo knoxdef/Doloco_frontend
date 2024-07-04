@@ -11,7 +11,7 @@ const Scanner = ({ navigation }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertTitle, setAlertTitle] = useState('');
     const [alertMessage, setAlertMessage] = useState('');
-
+    
     const { checkBluetoothState, startScanning, connectToDevice, startNotification, readNotification, allDevices } = useManager();
     const { getRequest } = useAxios();
 

@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -15,25 +15,30 @@ import {
   useBiometric,
   useManager,
 } from '../../../utils/hooks';
-import {Dropdown} from 'react-native-element-dropdown';
-import {useFocusEffect} from '@react-navigation/native';
+import { Dropdown } from 'react-native-element-dropdown';
+import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
-const IotProfile = ({navigation, route}) => {
+const IotProfile = ({ navigation, route }) => {
   const [value, setValue] = useState('');
   const [pinValue, setPinValue] = useState('');
   const [temp, setTemp] = useState();
   const [user, setUser] = useState();
-  const {name, serial} = route?.params;
+  const { name, serial } = route?.params;
+
   const [showAlert, setShowAlert] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
 
-  const {getData} = useAsyncStorage();
-  const {checkBiometrics, simplyPrompt} = useBiometric();
-  const {postRequest} = useAxios();
-  const {findSpecificDeviceAndConnect} = useManager();
+  const [openDoorShowAlert, setOpenDoorShowAlert] = useState(false);
+  const [openDoorAlertTitle, setOpenDoorAlertTitle] = useState('');
+  const [openDoorAlertMessage, setOpenDoorAlertMessage] = useState('');
+
+  const { getData } = useAsyncStorage();
+  const { checkBiometrics, simplyPrompt } = useBiometric();
+  const { postRequest } = useAxios();
+  const { findSpecificDeviceAndConnect } = useManager();
 
   const deleteMessage = () => {
     setShowAlert(true);
@@ -76,9 +81,9 @@ const IotProfile = ({navigation, route}) => {
               serial: serial,
             });
             if (response.status === 200) {
-              setShowAlert(true);
-              setAlertTitle('Success');
-              setAlertMessage('Access request granted');
+              setOpenDoorShowAlert(true);
+              setOpenDoorAlertTitle('Success');
+              setOpenDoorAlertMessage('Access request granted');
             }
           } else {
             console.log('Biometric prompt cancelled');
@@ -95,25 +100,25 @@ const IotProfile = ({navigation, route}) => {
           pin: pinValue,
         });
         if (response.status === 200) {
-          setShowAlert(true);
-          setAlertTitle('Success');
-          setAlertMessage('Access request granted');
+          setOpenDoorShowAlert(true);
+          setOpenDoorAlertTitle('Success');
+          setOpenDoorAlertMessage('Access request granted');
         }
       } else {
-        setShowAlert(true);
-        setAlertTitle('Warning');
-        setAlertMessage('Please select your access type');
+        setOpenDoorShowAlert(true);
+        setOpenDoorAlertTitle('Warning');
+        setOpenDoorAlertMessage('Please select your access type');
       }
     } catch (error) {
-      setShowAlert(true);
-      setAlertTitle('Error');
-      setAlertMessage('Access request denied');
+      setOpenDoorShowAlert(true);
+      setOpenDoorAlertTitle('Error');
+      setOpenDoorAlertMessage('Access request denied');
     }
   };
 
   const accesstypeList = [
-    {label: 'Fingerprint', value: 'Fingerprint'},
-    {label: 'Pin', value: 'Pin'},
+    { label: 'Fingerprint', value: 'Fingerprint' },
+    { label: 'Pin', value: 'Pin' },
   ];
 
   return (
@@ -126,8 +131,8 @@ const IotProfile = ({navigation, route}) => {
             alertTitle === 'Success'
               ? 'green'
               : alertTitle === 'Error'
-              ? 'red'
-              : 'orange',
+                ? 'red'
+                : 'orange',
           fontSize: 30,
           fontWeight: 'bold',
         }}
@@ -145,6 +150,35 @@ const IotProfile = ({navigation, route}) => {
         closeOnTouchOutside={false}
       />
 
+      <AwesomeAlert
+        show={openDoorShowAlert}
+        title={openDoorAlertTitle}
+        titleStyle={{
+          color:
+            openDoorAlertTitle === 'Success'
+              ? 'green'
+              : openDoorAlertTitle === 'Error'
+                ? 'red'
+                : 'orange',
+          fontSize: 30,
+          fontWeight: 'bold',
+        }}
+        message={openDoorAlertMessage}
+        showConfirmButton={openDoorAlertTitle === 'Success'}
+        showCancelButton={openDoorAlertTitle === 'Error' || openDoorAlertTitle === 'Warning'}
+        confirmButtonColor={'green'}
+        cancelButtonColor={openDoorAlertTitle === 'Error' ? 'red' : 'orange'}
+        confirmText={'Close'}
+        cancelText={'Close'}
+        onConfirmPressed={() => {
+          setOpenDoorShowAlert(false);
+        }}
+        onCancelPressed={() => {
+          setOpenDoorShowAlert(false);
+        }}
+        closeOnTouchOutside={false}
+      />
+
       <View style={styles.root}>
         <Text style={styles.toolName}>{name}</Text>
         <View style={styles.switchContainer}>
@@ -152,7 +186,7 @@ const IotProfile = ({navigation, route}) => {
             style={styles.dropdown}
             itemTextStyle={styles.dropdownItemText}
             selectedTextStyle={styles.selectedTextStyle}
-            placeholderStyle={{color: 'grey'}}
+            placeholderStyle={{ color: 'grey' }}
             maxHeight={200}
             labelField="label"
             valueField="value"
@@ -190,7 +224,7 @@ const IotProfile = ({navigation, route}) => {
       </View>
       <View style={styles.iotFooterContainer}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('History', {serial: serial})}
+          onPress={() => navigation.navigate('History', { serial: serial })}
           style={styles.iconWrapper}>
           <Icon name="restore" size={30} color="black" />
           <Text>History</Text>
@@ -198,7 +232,7 @@ const IotProfile = ({navigation, route}) => {
 
         {temp && temp.role !== 'user' && (
           <TouchableOpacity
-            onPress={() => navigation.navigate('AccessData', {serial: serial})}
+            onPress={() => navigation.navigate('AccessData', { serial: serial })}
             style={styles.iconWrapper}>
             <Icon name="key" size={30} color="black" />
             <Text>Manage Access</Text>
