@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAxios, useManager } from '../../../utils/hooks';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -11,7 +11,7 @@ const Scanner = ({ navigation }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertTitle, setAlertTitle] = useState('');
     const [alertMessage, setAlertMessage] = useState('');
-    
+
     const { checkBluetoothState, startScanning, connectToDevice, startNotification, readNotification, allDevices } = useManager();
     const { getRequest } = useAxios();
 
