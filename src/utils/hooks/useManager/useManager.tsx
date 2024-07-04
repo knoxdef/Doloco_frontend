@@ -74,13 +74,13 @@ const useManager = () => {
     }
 
     BleManager.start({showAlert: false}).then(() => {
+      setAllDevices([]);
       bleManagerEmitter.addListener(
         'BleManagerDiscoverPeripheral',
         handleDiscoverPeripheral,
       );
-      setAllDevices([]);
 
-      BleManager.scan([], 10, true);
+      BleManager.scan([], 10, false);
 
       setTimeout(() => {
         stopScanning();

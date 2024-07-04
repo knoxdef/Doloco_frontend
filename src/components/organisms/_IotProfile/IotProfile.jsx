@@ -21,17 +21,16 @@ const IotProfile = ({ navigation, route }) => {
   const { postRequest } = useAxios();
   const { findSpecificDeviceAndConnect } = useManager();
 
-  const deleteMessage = () => {    
+  const deleteMessage = () => {
     setShowAlert(true);
     setAlertTitle('Warning');
     setAlertMessage('Are you sure want to delete this device?');
-    
   };
 
   const handleDelete = async () => {
-    const response = await postRequest('access_list/delete-all', {serial: serial});
+    const response = await postRequest('access_list/delete-all', { serial: serial });
 
-    if(response.status === 200) navigation.navigate('Home');
+    if (response.status === 200) navigation.navigate('Home');
   }
 
   const fetchUserRole = useCallback(async () => {
@@ -190,14 +189,6 @@ const IotProfile = ({ navigation, route }) => {
 
         <TouchableOpacity
           onPress={deleteMessage}
-          style={styles.iconWrapper}
-        >
-          <Icon name="delete" size={30} color="black" />
-          <Text>Delete</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={handleDelete}
           style={styles.iconWrapper}
         >
           <Icon name="delete" size={30} color="black" />

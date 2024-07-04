@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useManager } from '../../../utils/hooks';
+import { useAxios, useManager } from '../../../utils/hooks';
 
 const Scanner = ({ navigation }) => {
     const [firstScanInitiated, setFirstScanInitiated] = useState(false);
+    const [existingIotDevices, setExistingIotDevices] = useState([]);
+    const [filteredDevices, setFilteredDevices] = useState([]);
     const { checkBluetoothState, startScanning, connectToDevice, startNotification, readNotification, allDevices } = useManager();
+
+    const { getRequest } = useAxios();
+
     const style = StyleSheet.create({
         screen: {
             gap: 20,
@@ -84,6 +89,36 @@ const Scanner = ({ navigation }) => {
         }
     };
 
+    useEffect(() => {
+        const fetchExistingIotDevices = async () => {
+            try {
+                const response = await getRequest('iot_tool', {});
+                if (response.status === 200) {
+                    setExistingIotDevices(response.data.data);
+                }
+            } catch (error) {
+                console.error('Error fetching existing IoT devices:', error);
+            }
+        };
+
+        fetchExistingIotDevices();
+    }, []);
+
+    useEffect(() => {
+        const filterDevices = () => {
+            if (existingIotDevices.length > 0) {
+                const filtered = allDevices.filter(device =>
+                    !existingIotDevices.some(existingDevice => existingDevice.serial === device.name)
+                );
+                setFilteredDevices(filtered);
+            } else {
+                setFilteredDevices(allDevices);
+            }
+        };
+
+        filterDevices();
+    }, [allDevices, existingIotDevices]);
+
     return (
         <SafeAreaView style={style.screen}>
             {!firstScanInitiated ? (<Text style={style.noFirstInitiationText}>Let's start to find your device</Text>) : ('')}
@@ -109,7 +144,7 @@ const Scanner = ({ navigation }) => {
                     contentContainerStyle={style.scanResultContentContainer}
                     style={style.scanResultList}
                 >
-                    {allDevices.map((device) => {
+                    {filteredDevices.map((device) => {
                         return (
                             <Pressable key={device?.id} style={style.scanResultItem} onPress={() => onItemPressHandler(device)}>
                                 <Text style={style.text}>{device?.name}</Text>

@@ -8,9 +8,9 @@ const useAxios = () => {
         },
     });
 
-    const getRequest = async (endpoint) => {
+    const getRequest = async (endpoint, config) => {
         try {
-            const response = await axiosInstance.get(endpoint);
+            const response = await axiosInstance.get(endpoint, config);
             return response;
         } catch (error) {
             console.log(error);
