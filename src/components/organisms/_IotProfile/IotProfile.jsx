@@ -1,25 +1,39 @@
-import React, { useCallback, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, TextInput, Keyboard } from 'react-native';
-import { useAsyncStorage, useAxios, useBiometric, useManager } from '../../../utils/hooks';
-import { Dropdown } from 'react-native-element-dropdown';
-import { useFocusEffect } from '@react-navigation/native';
+import React, {useCallback, useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  Dimensions,
+  TextInput,
+  Keyboard,
+} from 'react-native';
+import {
+  useAsyncStorage,
+  useAxios,
+  useBiometric,
+  useManager,
+} from '../../../utils/hooks';
+import {Dropdown} from 'react-native-element-dropdown';
+import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
-const IotProfile = ({ navigation, route }) => {
+const IotProfile = ({navigation, route}) => {
   const [value, setValue] = useState('');
   const [pinValue, setPinValue] = useState('');
   const [temp, setTemp] = useState();
   const [user, setUser] = useState();
-  const { name, serial } = route?.params;
+  const {name, serial} = route?.params;
   const [showAlert, setShowAlert] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
 
-  const { getData } = useAsyncStorage();
-  const { checkBiometrics, simplyPrompt } = useBiometric();
-  const { postRequest } = useAxios();
-  const { findSpecificDeviceAndConnect } = useManager();
+  const {getData} = useAsyncStorage();
+  const {checkBiometrics, simplyPrompt} = useBiometric();
+  const {postRequest} = useAxios();
+  const {findSpecificDeviceAndConnect} = useManager();
 
   const deleteMessage = () => {
     setShowAlert(true);
@@ -28,22 +42,28 @@ const IotProfile = ({ navigation, route }) => {
   };
 
   const handleDelete = async () => {
-    const response = await postRequest('access_list/delete-all', { serial: serial });
+    const response = await postRequest('access_list/delete-all', {
+      email: user.email,
+      serial: serial,
+    });
 
     if (response.status === 200) navigation.navigate('Home');
-  }
+  };
 
   const fetchUserRole = useCallback(async () => {
     const userData = await getData('user');
     setUser(userData);
-    const response = await postRequest('access_list/role', { email: userData.email, serial: serial });
+    const response = await postRequest('access_list/role', {
+      email: userData.email,
+      serial: serial,
+    });
     setTemp(response.data.Access);
   }, [getData, postRequest, serial]);
 
   useFocusEffect(
     useCallback(() => {
       fetchUserRole();
-    }, [])
+    }, []),
   );
 
   const handleAccess = async () => {
@@ -51,7 +71,10 @@ const IotProfile = ({ navigation, route }) => {
       if (value === 'Fingerprint') {
         if (await checkBiometrics()) {
           if (await simplyPrompt()) {
-            const response = await postRequest('fingerprint/access', { email: user.email, serial: serial });
+            const response = await postRequest('fingerprint/access', {
+              email: user.email,
+              serial: serial,
+            });
             if (response.status === 200) {
               setShowAlert(true);
               setAlertTitle('Success');
@@ -66,7 +89,11 @@ const IotProfile = ({ navigation, route }) => {
       } else if (value === 'Pin') {
         Keyboard.dismiss();
         setPinValue('');
-        const response = await postRequest('fingerprint/access', { email: user.email, serial: serial, pin: pinValue });
+        const response = await postRequest('fingerprint/access', {
+          email: user.email,
+          serial: serial,
+          pin: pinValue,
+        });
         if (response.status === 200) {
           setShowAlert(true);
           setAlertTitle('Success');
@@ -85,18 +112,22 @@ const IotProfile = ({ navigation, route }) => {
   };
 
   const accesstypeList = [
-    { label: 'Fingerprint', value: 'Fingerprint' },
-    { label: 'Pin', value: 'Pin' },
+    {label: 'Fingerprint', value: 'Fingerprint'},
+    {label: 'Pin', value: 'Pin'},
   ];
 
   return (
     <SafeAreaView style={styles.container}>
-
       <AwesomeAlert
         show={showAlert}
         title={alertTitle}
         titleStyle={{
-          color: alertTitle === 'Success' ? 'green' : alertTitle === 'Error' ? 'red' : 'orange',
+          color:
+            alertTitle === 'Success'
+              ? 'green'
+              : alertTitle === 'Error'
+              ? 'red'
+              : 'orange',
           fontSize: 30,
           fontWeight: 'bold',
         }}
@@ -117,12 +148,11 @@ const IotProfile = ({ navigation, route }) => {
       <View style={styles.root}>
         <Text style={styles.toolName}>{name}</Text>
         <View style={styles.switchContainer}>
-
           <Dropdown
             style={styles.dropdown}
             itemTextStyle={styles.dropdownItemText}
             selectedTextStyle={styles.selectedTextStyle}
-            placeholderStyle={{ color: 'grey' }}
+            placeholderStyle={{color: 'grey'}}
             maxHeight={200}
             labelField="label"
             valueField="value"
@@ -134,18 +164,24 @@ const IotProfile = ({ navigation, route }) => {
             }}
           />
 
-          {value === 'Pin' &&
-            <View style={{ width: Dimensions.get('window').width * 0.7, alignItems: 'center' }}>
+          {value === 'Pin' && (
+            <View
+              style={{
+                width: Dimensions.get('window').width * 0.7,
+                alignItems: 'center',
+              }}>
               <TextInput
                 keyboardType={'number-pad'}
                 style={styles.input}
-                onChangeText={(val) => { setPinValue(val); }}
+                onChangeText={val => {
+                  setPinValue(val);
+                }}
                 value={pinValue}
                 placeholder="Input Your Pin Number..."
                 placeholderTextColor={'gray'}
               />
             </View>
-          }
+          )}
 
           <TouchableOpacity onPress={handleAccess}>
             <Text style={styles.accessButton}>Open Door</Text>
@@ -153,50 +189,46 @@ const IotProfile = ({ navigation, route }) => {
         </View>
       </View>
       <View style={styles.iotFooterContainer}>
-
         <TouchableOpacity
-          onPress={() => navigation.navigate('History', { serial: serial })}
-          style={styles.iconWrapper}
-        >
+          onPress={() => navigation.navigate('History', {serial: serial})}
+          style={styles.iconWrapper}>
           <Icon name="restore" size={30} color="black" />
-          <Text >History</Text>
+          <Text>History</Text>
         </TouchableOpacity>
 
-        {temp && temp.role !== 'user' &&
+        {temp && temp.role !== 'user' && (
           <TouchableOpacity
-            onPress={() => navigation.navigate('AccessData', { serial: serial })}
-            style={styles.iconWrapper}
-          >
+            onPress={() => navigation.navigate('AccessData', {serial: serial})}
+            style={styles.iconWrapper}>
             <Icon name="key" size={30} color="black" />
-            <Text >Manage Access</Text>
+            <Text>Manage Access</Text>
           </TouchableOpacity>
-        }
+        )}
 
-        {temp && temp.role !== 'user' &&
+        {temp && temp.role !== 'user' && (
           <TouchableOpacity
             onPress={async () => {
               const response = await findSpecificDeviceAndConnect(serial);
               if (response) {
-                navigation.navigate('WifiInput', { deviceName: response.name, deviceId: response.id, configured: false });
+                navigation.navigate('WifiInput', {
+                  deviceName: response.name,
+                  deviceId: response.id,
+                  configured: false,
+                });
               }
             }}
-            style={styles.iconWrapper}
-          >
+            style={styles.iconWrapper}>
             <Icon name="wifi" size={30} color="black" />
-            <Text >Set Wifi</Text>
+            <Text>Set Wifi</Text>
           </TouchableOpacity>
-        }
+        )}
 
-        <TouchableOpacity
-          onPress={deleteMessage}
-          style={styles.iconWrapper}
-        >
+        <TouchableOpacity onPress={deleteMessage} style={styles.iconWrapper}>
           <Icon name="delete" size={30} color="black" />
           <Text>Delete</Text>
         </TouchableOpacity>
-
       </View>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 };
 
@@ -293,7 +325,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     color: 'black',
   },
-
 });
 
 export default IotProfile;
