@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAxios, useManager } from '../../../utils/hooks';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const Scanner = ({ navigation }) => {
     const [firstScanInitiated, setFirstScanInitiated] = useState(false);
     const [existingIotDevices, setExistingIotDevices] = useState([]);
     const [filteredDevices, setFilteredDevices] = useState([]);
-    const { checkBluetoothState, startScanning, connectToDevice, startNotification, readNotification, allDevices } = useManager();
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertTitle, setAlertTitle] = useState('');
+    const [alertMessage, setAlertMessage] = useState('');
 
+    const { checkBluetoothState, startScanning, connectToDevice, startNotification, readNotification, allDevices } = useManager();
     const { getRequest } = useAxios();
 
     const style = StyleSheet.create({
@@ -121,6 +125,30 @@ const Scanner = ({ navigation }) => {
 
     return (
         <SafeAreaView style={style.screen}>
+
+            <AwesomeAlert
+                show={showAlert}
+                title={alertTitle}
+                titleStyle={{
+                    color:
+                        alertTitle === 'Success'
+                            ? 'green'
+                            : alertTitle === 'Error'
+                                ? 'red'
+                                : 'orange',
+                    fontSize: 30,
+                    fontWeight: 'bold',
+                }}
+                message={alertMessage}
+                showCancelButton={true}
+                cancelButtonColor={'orange'}
+                cancelText={'Close'}
+                onCancelPressed={() => {
+                    setShowAlert(false);
+                }}
+                closeOnTouchOutside={false}
+            />
+
             {!firstScanInitiated ? (<Text style={style.noFirstInitiationText}>Let's start to find your device</Text>) : ('')}
             <Pressable
                 style={style.scanButton}
@@ -130,7 +158,9 @@ const Scanner = ({ navigation }) => {
                         setFirstScanInitiated(true);
                         startScanning();
                     } else {
-                        Alert.alert("Warning", "Please turn on your bluetooth to use this service.");
+                        setShowAlert(true);
+                        setAlertTitle('Warning');
+                        setAlertMessage('Please turn on your bluetooth');
                     }
                 }}
             >
