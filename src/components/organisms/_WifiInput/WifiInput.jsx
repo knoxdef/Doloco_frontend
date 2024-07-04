@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -76,6 +76,16 @@ const WifiInput = ({ route, navigation }) => {
             wifiPassword: text,
         }));
     };
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('beforeRemove', async (e) => {
+            e.preventDefault();
+            await disconnectBle(deviceId);
+            navigation.dispatch(e.data.action);
+        });
+
+        return unsubscribe;
+    }, [navigation]);
 
     const handleSubmit = async () => {
         try {
