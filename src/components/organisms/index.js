@@ -10,3 +10,4 @@ export * from './_Profile';
 export * from './_Register';
 export * from './_Scanner';
 export * from './_WifiInput';
+export * from './_FormChangePin';

@@ -95,7 +95,7 @@ const WifiInput = ({ route, navigation }) => {
             await disconnectBle(deviceId);
 
             const user = await getData('user');
-            await postRequest('storeAccess', { serial: deviceName, email: user.email });
+            await postRequest('access/save', { serial: deviceName, email: user.email });
 
             setDeviceDetail({ wifiName: '', wifiPassword: '' });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AccessData, History, Home, Inbox, Invitation, IotProfile, Scanner, WifiInput } from '../../organisms';
+import { AccessData, FormChangePin, History, Home, Inbox, Invitation, IotProfile, Scanner, WifiInput } from '../../organisms';
 
 const HomeStackNavigation = () => {
   const Stack = createNativeStackNavigator();
@@ -46,7 +46,7 @@ const HomeStackNavigation = () => {
         name="AccessData"
         component={AccessData}
         options={() => ({
-          title: 'Data Pengguna IoT',
+          title: 'Iot User List',
           contentStyle: { backgroundColor: '#FFFBE9' },
           headerStyle: { backgroundColor: '#AD8B73' },
         })}
@@ -74,6 +74,15 @@ const HomeStackNavigation = () => {
         component={History}
         options={() => ({
           title: 'History',
+          contentStyle: { backgroundColor: '#FFFBE9' },
+          headerStyle: { backgroundColor: '#AD8B73' },
+        })}
+      />
+      <Stack.Screen
+        name="FormChangePin"
+        component={FormChangePin}
+        options={() => ({
+          title: 'Pin Change Form',
           contentStyle: { backgroundColor: '#FFFBE9' },
           headerStyle: { backgroundColor: '#AD8B73' },
         })}

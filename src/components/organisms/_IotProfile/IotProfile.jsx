@@ -18,6 +18,7 @@ import {
 import { Dropdown } from 'react-native-element-dropdown';
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
 const IotProfile = ({ navigation, route }) => {
@@ -52,7 +53,7 @@ const IotProfile = ({ navigation, route }) => {
       serial: serial,
     });
 
-    if (response.status === 200) navigation.navigate('Home');
+    if (response.status === 200) { navigation.navigate('Home'); }
   };
 
   const fetchUserRole = useCallback(async () => {
@@ -257,10 +258,16 @@ const IotProfile = ({ navigation, route }) => {
           </TouchableOpacity>
         )}
 
+        <TouchableOpacity onPress={() => { navigation.navigate('FormChangePin', { serial: serial }); }} style={styles.iconWrapper}>
+          <IonIcon name="keypad" size={30} color="black" />
+          <Text>Change Pin</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={deleteMessage} style={styles.iconWrapper}>
           <Icon name="delete" size={30} color="black" />
           <Text>Delete</Text>
         </TouchableOpacity>
+
       </View>
     </SafeAreaView>
   );
