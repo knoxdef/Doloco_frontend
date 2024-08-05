@@ -51,7 +51,7 @@ const ForgotPassword = ({ navigation }) => {
             const response = await postRequest('password-reset', {
                 email: email,
                 new_password: password,
-                confirm_password: confirmPassword
+                confirm_password: confirmPassword,
             });
 
             if (response.status === HttpStatusCode.Ok) {

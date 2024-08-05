@@ -83,9 +83,9 @@ const Scanner = ({ navigation }) => {
             const stringValue = String.fromCharCode.apply(null, new Uint8Array(wifiStatus));
 
             if (stringValue === 'configured') {
-                navigation.navigate('WifiInput', { deviceId: device.id, deviceName: device.name, configured: true });
+                navigation.navigate('WifiInput', { deviceId: device.id, deviceName: device.name, configured: true, setWifi: false });
             } else {
-                navigation.navigate('WifiInput', { deviceId: device.id, deviceName: device.name, configured: false });
+                navigation.navigate('WifiInput', { deviceId: device.id, deviceName: device.name, configured: false, setWifi: false });
             }
 
         } catch (error) {
