@@ -10,7 +10,7 @@ const WifiInput = ({ route, navigation }) => {
     const [alertTitle, setAlertTitle] = useState('');
     const [alertMessage, setAlertMessage] = useState('');
 
-    const { deviceName, deviceId, configured } = route?.params;
+    const { deviceName, deviceId, configured, setWifi } = route?.params;
     const { sendMessage, disconnectBle } = useManager();
     const { getData } = useAsyncStorage();
     const { postRequest } = useAxios();
@@ -139,12 +139,17 @@ const WifiInput = ({ route, navigation }) => {
             <ScrollView contentContainerStyle={style.scroll}>
                 <Text style={style.title}>{deviceName}</Text>
                 <View style={style.inputContainer}>
-                    <Text style={style.text}>Device Name</Text>
-                    <TextInput
-                        style={style.textInput}
-                        onChangeText={handleDeviceNameChange}
-                        value={deviceDetail.deviceName}
-                    />
+
+                    {!setWifi && (
+                        <>
+                            <Text style={style.text}>Device Name</Text>
+                            <TextInput
+                                style={style.textInput}
+                                onChangeText={handleDeviceNameChange}
+                                value={deviceDetail.deviceName}
+                            />
+                        </>
+                    )}
                     {!configured &&
                         (
                             <>

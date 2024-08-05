@@ -249,6 +249,7 @@ const IotProfile = ({ navigation, route }) => {
                   deviceName: response.name,
                   deviceId: response.id,
                   configured: false,
+                  setWifi: true,
                 });
               }
             }}
