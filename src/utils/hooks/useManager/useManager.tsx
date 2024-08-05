@@ -12,11 +12,11 @@ const useManager = () => {
   const BleManagerModule = NativeModules.BleManager;
   const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
   const [allDevices, setAllDevices] = useState<Device[]>([]);
-  const SERVICE_UUID = '6E400001-B5A3-F393-E0A9-E50E24DCCA9E';
-  const WIFI_CHARACTERISTIC_UUID = '6E400002-B5A3-F393-E0A9-E50E24DCCA9E';
+  const SERVICE_UUID = '6E400001-B5A3-F393-E0A9-E50E24DCCA9E'; 
+  const WIFI_CHARACTERISTIC_UUID = '6E400002-B5A3-F393-E0A9-E50E24DCCA9E'; 
 
   const requestBluetoothPermissions = async () => {
-    if (Platform.OS === 'android') {
+    if (Platform.OS === 'android') { //check os
       if (Platform.Version >= 31) {
         // Android 12 and above
         const granted = await PermissionsAndroid.requestMultiple([
@@ -55,12 +55,12 @@ const useManager = () => {
     return false;
   };
 
-  const handleDiscoverPeripheral = (device: Device) => {
-    if (device && device?.id && device.name?.includes('Doloco')) {
-      setAllDevices(prevDevices => {
-        if (!prevDevices.some(d => d.id === device.id)) {
-          return [...prevDevices, device];
-        }
+  const handleDiscoverPeripheral = (device: Device) => { //tanya device ada atau tidak
+    if (device && device?.id && device.name?.includes('Doloco')) { //terkandung string doloco
+      setAllDevices(prevDevices => { //prevdevice sudah dari library, digunakan untuk memanggil data yang sudah kesimpan
+        if (!prevDevices.some(d => d.id === device.id)) { //kalau d.id sama dengan device.id akan ngebalikin true, tapi karena ada ! akan menjadi false
+          return [...prevDevices, device]; //jika true akan menggabungkan semua data prevdevice dengan device dan menjadi all device
+        }                                  //semua data akan di destructuring, artinya semua data dipecah dan digabungkan kembali menjadi 1 array bersama dengan device
         return prevDevices;
       });
     }
@@ -74,8 +74,8 @@ const useManager = () => {
     }
 
     BleManager.start({showAlert: false}).then(() => {
-      setAllDevices([]);
-      bleManagerEmitter.addListener(
+      setAllDevices([]); //set all device untuk dibersihkan terlebih dahulu biar gk double
+      bleManagerEmitter.addListener( //digunakan untuk mentrigger handleDiscoverPeripheral
         'BleManagerDiscoverPeripheral',
         handleDiscoverPeripheral,
       );
@@ -88,7 +88,7 @@ const useManager = () => {
     });
   };
 
-  const checkBluetoothState = async () => {
+  const checkBluetoothState = async () => { //cari bluetooth aktif atau enggak
     try {
       const state = await BleManager.checkState();
       return state;
@@ -107,7 +107,7 @@ const useManager = () => {
       });
   };
 
-  const startNotification = async (deviceId: string) => {
+  const startNotification = async (deviceId: string) => { //untuk memberitahu aplikasi bahwa dia sudah harus menerima notifikasi dari IoT
     try {
       await BleManager.startNotification(
         deviceId,
@@ -121,7 +121,7 @@ const useManager = () => {
     }
   };
 
-  const readNotification = async (deviceId: string) => {
+  const readNotification = async (deviceId: string) => { //membaca notifikasi yang dikirimkan dari IoT
     try {
       const data = await BleManager.read(
         deviceId,
@@ -169,18 +169,18 @@ const useManager = () => {
     await BleManager.disconnect(id);
   };
 
-  const stringToBytes = (str: string) => {
+  const stringToBytes = (str: string) => {  //untuk mengubah string yang dikirimkan ke IoT menjadi Bytes
     return Array.from(new TextEncoder().encode(str));
   };
 
-  const findSpecificDeviceAndConnect = async (serial: string) => {
+  const findSpecificDeviceAndConnect = async (serial: string) => { // digunakan untuk set wifi pada IoT Profile
     await startScanning();
 
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    for (const device of allDevices) {
+    for (const device of allDevices) { //dari parameter alldevice akan diambil 1 parameter
       try {
-        if (device.name === serial) {
+        if (device.name === serial) { //jika nama device(data dari hasil scan) sama dengan serial(dari aplikasi)
           await connectToDevice(device.id);
           return {id: device.id, name: device.name};
         }

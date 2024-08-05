@@ -41,28 +41,28 @@ const useBiometric = () => {
         }
     };
 
-    const createKeys = async () => {
-        try {
-            const resultObject = await rnBiometrics.createKeys();
-            const { publicKey } = resultObject;
-            return publicKey;
-        } catch (error) {
-            console.log('Error:', error);
-        }
-    };
+    // const createKeys = async () => {
+    //     try {
+    //         const resultObject = await rnBiometrics.createKeys();
+    //         const { publicKey } = resultObject;
+    //         return publicKey;
+    //     } catch (error) {
+    //         console.log('Error:', error);
+    //     }
+    // };
 
-    const deleteKeys = async () => {
-        await rnBiometrics.deleteKeys()
-            .then((resultObject) => {
-                const { keysDeleted } = resultObject;
+    // const deleteKeys = async () => {
+    //     await rnBiometrics.deleteKeys()
+    //         .then((resultObject) => {
+    //             const { keysDeleted } = resultObject;
 
-                if (keysDeleted) {
-                    console.log('Successful deletion');
-                } else {
-                    console.log('Unsuccessful deletion because there were no keys to delete');
-                }
-            });
-    };
+    //             if (keysDeleted) {
+    //                 console.log('Successful deletion');
+    //             } else {
+    //                 console.log('Unsuccessful deletion because there were no keys to delete');
+    //             }
+    //         });
+    // };
 
     const simplyPrompt = async () => {
 
@@ -85,8 +85,8 @@ const useBiometric = () => {
     return {
         checkBiometrics,
         checkBiometricKeyExist,
-        createKeys,
-        deleteKeys,
+        // createKeys,
+        // deleteKeys,
         simplyPrompt,
     };
 };
