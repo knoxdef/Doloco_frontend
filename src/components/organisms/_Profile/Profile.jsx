@@ -5,11 +5,13 @@ import { useAsyncStorage } from '../../../utils/hooks/useAsyncStorage';
 import { useFocusEffect } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useNotifications } from '../../../utils/hooks';
 
 const Profile = ({ navigation }) => {
   const [username, setUsername] = useState('');
 
   const { removeFromExistingData, getData } = useAsyncStorage();
+  const { requestPermission, generateFCMToken } = useNotifications();
 
   const handleSignOut = () => {
     removeFromExistingData('user');
@@ -17,6 +19,11 @@ const Profile = ({ navigation }) => {
 
   const handleInbox = () => {
     navigation.navigate('Inbox');
+  };
+
+  const handleNotification = () => {
+    requestPermission();
+    generateFCMToken();
   };
 
   const fetchUser = useCallback(async () => {
@@ -68,6 +75,13 @@ const Profile = ({ navigation }) => {
           <Text style={style.text}>Log Out</Text>
         </Pressable>
       </View>
+
+      <View style={style.buttonContainer}>
+        <Pressable style={style.button} onPress={handleNotification}>
+          <Text style={style.text}>Notification Test</Text>
+        </Pressable>
+      </View>
+      
     </SafeAreaView >
   );
 };

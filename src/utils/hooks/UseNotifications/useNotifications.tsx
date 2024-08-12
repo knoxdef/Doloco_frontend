@@ -1,17 +1,29 @@
 import {PermissionsAndroid} from 'react-native';
 
-
-import { View, Text } from 'react-native'
-import React from 'react'
+import messaging from '@react-native-firebase/messaging';
 
 const useNotifications = () => {
-
+  const requestPermission = async () => {
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-  return (
-    <View>
-      <Text>useNotifications</Text>
-    </View>
-  )
-}
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-export default useNotifications
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  };
+
+  const generateFCMToken = async () => {
+    const token = await messaging().getToken();
+    console.log('FCM Token:', token);
+  };
+
+  return {
+    requestPermission,
+    generateFCMToken,
+  };
+};
+
+export default useNotifications;
