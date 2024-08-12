@@ -21,15 +21,10 @@ function App(): React.JSX.Element {
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-      if (
-        remoteMessage.notification?.title &&
-        remoteMessage.notification?.body
-      ) {
-        Alert.alert(
-          remoteMessage.notification.title,
-          remoteMessage.notification.body,
-        );
-      }
+      Alert.alert(
+        remoteMessage.notification.title,
+        remoteMessage.notification.body,
+      );
     });
 
     return unsubscribe;

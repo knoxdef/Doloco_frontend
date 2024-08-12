@@ -269,6 +269,11 @@ const IotProfile = ({ navigation, route }) => {
           <Text>Delete</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity onPress={() => { }} style={styles.iconWrapper}>
+          <Icon name="volume-up" size={30} color="black" />
+          <Text>Notify On</Text>
+        </TouchableOpacity>
+
       </View>
     </SafeAreaView>
   );

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput, Pressable, ActivityIndicator, Alert 
 import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
 import { HttpStatusCode } from 'axios';
 import AwesomeAlert from 'react-native-awesome-alerts';
-import { useAsyncStorage, useAxios } from '../../../utils/hooks';
+import { useAsyncStorage, useAxios, useNotifications } from '../../../utils/hooks';
 
 const Register = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -16,6 +16,7 @@ const Register = ({ navigation }) => {
   const [alertMessage, setAlertMessage] = useState('');
   const [responseUser, setResponseUser] = useState();
 
+  const { generateFCMToken } = useNotifications()
   const { postRequest } = useAxios();
   const { addToExisting } = useAsyncStorage();
 
@@ -46,7 +47,7 @@ const Register = ({ navigation }) => {
     }
 
     try {
-      const response = await postRequest('register', { name: username, email: email, password: password });
+      const response = await postRequest('register', { name: username, email: email, password: password, fcmToken: await generateFCMToken() });
 
       if (response.status === HttpStatusCode.Created) {
         const userData = response.data.user;
