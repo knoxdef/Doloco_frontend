@@ -184,7 +184,7 @@ const FormChangePin = ({ route, navigation }) => {
                         style={styles.submitButton}
                         onPress={handleSubmit}
                     >
-                        <Text style={styles.text}>Sumbit</Text>
+                        <Text style={styles.text}>Submit</Text>
                     </Pressable>
                 )}
 
