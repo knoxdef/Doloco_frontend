@@ -10,7 +10,7 @@ const useBiometric = () => {
             const { available, biometryType } = resultObject;
 
             if (available && biometryType === BiometryTypes.Biometrics) {
-                console.log('Biometrics is supported');
+                // console.log('Biometrics is supported');
             } else {
                 console.log('Biometrics not supported');
             }
@@ -71,7 +71,7 @@ const useBiometric = () => {
             const { success } = resultObject;
 
             if (success) {
-                console.log('successful biometrics provided');
+                // console.log('successful biometrics provided');
             } else {
                 console.log('user cancelled biometric prompt');
             }
