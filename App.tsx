@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {Navigator} from './src/components/navigations/_Navigator';
+import {Alert} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
-import PushNotification from 'react-native-push-notification';
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -21,10 +21,15 @@ function App(): React.JSX.Element {
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-      PushNotification.localNotification({
-        title: remoteMessage.data?.title,
-        message: remoteMessage.data?.body,
-      });
+      if (
+        remoteMessage.notification?.title &&
+        remoteMessage.notification?.body
+      ) {
+        Alert.alert(
+          remoteMessage.notification.title,
+          remoteMessage.notification.body,
+        );
+      }
     });
 
     return unsubscribe;
