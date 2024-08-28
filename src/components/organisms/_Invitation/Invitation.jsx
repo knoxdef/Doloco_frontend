@@ -20,7 +20,7 @@ const Invitation = ({ navigation, route }) => {
 
   const sendInvitation = async () => {
     try {
-      const response = await postRequest('inbox/invitation/send', { senderEmail: senderEmail, receiverEmail: receiverEmail, serial: serial, note: note });
+      const response = await postRequest('invitation/send', { senderEmail: senderEmail, receiverEmail: receiverEmail, serial: serial, note: note });
       if (response.status === 201) {
         setReceiverEmail('');
         setNote('');
