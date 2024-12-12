@@ -1,0 +1,209 @@
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native';
+import CustomButton from '../../../buttonInputs/CustomButton/CustomButton';
+import { HttpStatusCode } from 'axios';
+import AwesomeAlert from 'react-native-awesome-alerts';
+import { useAsyncStorage, useAxios, useNotifications } from '../../../utils/hooks';
+
+const Register = ({ navigation }) => {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setloading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [responseUser, setResponseUser] = useState();
+
+  const { generateFCMToken } = useNotifications()
+  const { postRequest } = useAxios();
+  const { addToExisting } = useAsyncStorage();
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (username.length < 5) {
+      newErrors.username = 'Username must be at least 5 characters long.';
+    }
+    if (!email.includes('@')) {
+      newErrors.email = 'Email must be a valid email address.';
+    }
+    if (password.length < 7) {
+      newErrors.password = 'Password must be at least 7 characters long.';
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const onPressregister = async () => {
+    setloading(true);
+
+    if (!validate()) {
+      setloading(false);
+      return;
+    }
+
+    try {
+      const response = await postRequest('register', { name: username, email: email, password: password, fcmToken: await generateFCMToken() });
+
+      if (response.status === HttpStatusCode.Created) {
+        const userData = response.data.user;
+
+        if (response.status === 201) {
+          setShowAlert(true);
+          setAlertTitle('Success');
+          setAlertMessage('Registration Success');
+          setResponseUser(userData);
+        }
+      }
+    } catch (error) {
+      setShowAlert(true);
+      setAlertTitle('Error');
+      setAlertMessage('Registration failed, something went wrong');
+    } finally {
+      setloading(false);
+    }
+  };
+
+  const onPressLogin = () => {
+    navigation.navigate('Login');
+  };
+
+  return (
+    <View style={styles.container}>
+
+      <AwesomeAlert
+        show={showAlert}
+        title={alertTitle}
+        titleStyle={{
+          color: alertTitle === 'Success' ? 'green' : alertTitle === 'Error' ? 'red' : 'orange',
+          fontSize: 30,
+          fontWeight: 'bold',
+        }}
+        message={alertMessage}
+        showConfirmButton={alertTitle === 'Success'}
+        showCancelButton={alertTitle === 'Warning' || alertTitle === 'Error'}
+        confirmButtonColor={'green'}
+        cancelButtonColor={alertTitle === 'Error' ? 'red' : 'orange'}
+        confirmText={'Go to home page'}
+        cancelText={'Close'}
+        onConfirmPressed={async () => {
+          setShowAlert(false);
+          await addToExisting('user', { email: responseUser.email, username: responseUser.name });
+        }}
+        onCancelPressed={() => {
+          setShowAlert(false);
+        }}
+        closeOnTouchOutside={false}
+      />
+
+      <View style={styles.root}>
+        <Text style={styles.headSignIn}>Register</Text>
+
+        <View style={{ width: "100%" }}>
+          <TextInput
+            style={styles.inputCointainer}
+            placeholder="Username"
+            placeholderTextColor={'grey'}
+            value={username}
+            onChangeText={(text) => setUsername(text)}
+          />
+          {errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
+        </View>
+
+        <View style={{ width: "100%" }}>
+
+          <TextInput
+            style={styles.inputCointainer}
+            placeholder="Email"
+            placeholderTextColor={'grey'}
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+            autoCapitalize="none"
+          />
+          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+        </View>
+
+        <View style={{ width: "100%" }}>
+          <TextInput
+            style={styles.inputCointainer}
+            placeholder={'Password'}
+            placeholderTextColor={'grey'}
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            secureTextEntry={true}
+            autoCapitalize="none"
+          />
+          {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+        </View>
+
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#000ff" />
+        ) : (
+          <Pressable onPress={onPressregister} style={styles.buttonContainer}>
+            <Text style={styles.buttonText}>Register</Text>
+          </Pressable>
+        )}
+
+      </View>
+      <View style={styles.bottomButton}>
+        <CustomButton text="Have an account? Login Here" onPress={onPressLogin} type="TERTIARY" />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    backgroundColor: '#FFFBE9',
+  },
+  inputCointainer: {
+    backgroundColor: '#fff',
+    width: '100%',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginVertical: 5,
+    color: 'black',
+  },
+  buttonContainer: {
+    width: '100%',
+    padding: 15,
+    marginVertical: 5,
+    alignItems: 'center',
+    borderRadius: 5,
+    backgroundColor: '#AD8B73',
+  },
+  buttonText: {
+    fontWeight: 'bold',
+    color: '#000000',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+  },
+  root: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    gap: 15,
+  },
+  headSignIn: {
+    fontWeight: 'bold',
+    fontSize: 40,
+    color: 'black',
+  },
+  bottomButton: {
+    padding: 20,
+  },
+});
+
+export default Register;

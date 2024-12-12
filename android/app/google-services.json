@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "879415368432",
+    "project_id": "doloco-app",
+    "storage_bucket": "doloco-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879415368432:android:1b956d008afca7ae754035",
+        "android_client_info": {
+          "package_name": "com.dolocoproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxLfdTXpSIuqFabMQ69J6rGq0Bp0BNQnE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
